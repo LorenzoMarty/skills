@@ -30,7 +30,7 @@ Falhou → volte para quem chamou com o erro; não maquie.
 ## 2. Requisitos e critérios de concluído
 
 Para cada `REQ-N` e cada critério de concluído da spec ou do ticket, aponte
-a evidência: teste que passou, comando e saída, ou captura do app rodando (skill `run`, se
+a evidência **em runtime** (ler o código não confirma comportamento observável): teste que passou, comando e saída, ou captura do app rodando (skill `run`, se
 disponível). Critério sem evidência fica ❌ ou ⚠️, nunca ✅.
 
 ## 3. Leitura adversarial do diff
@@ -62,9 +62,14 @@ achar como hipótese a confirmar.
   Tarefa não trivial → sugira `knowledge:claude-obsidian` (sem encadear) e
   ofereça `workflow:ship-spec` numa linha (push só com pedido explícito).
 - Algum ❌ → escreva "Correções pendentes" na spec (arquivo, o que está
-  errado, o que deve acontecer), `status: needs-changes` e volte para
-  `workflow:implement`. Se uma skill do plano não invocada causou a falha, a
+  errado, evidência, o que deve acontecer; específico o bastante para o
+  `implement` agir sem perguntar), `status: needs-changes` e volte para
+  `workflow:implement`. Se `revision_count` >= 4, pare e peça orientação em vez
+  de repetir o ciclo. Se uma skill do plano não invocada causou a falha, a
   correção manda invocá-la explicitamente.
+- Skill do plano `experimental` ou `verified` (sem histórico): registre em
+  `evaluation` do `skills-plan.yaml` `useful`, `requirement_coverage`, `issues`
+  e `future_confidence`; o `spec-router` usa isso como `historical_evidence`.
 
 ## 4. Relatório
 
@@ -79,3 +84,8 @@ achar como hipótese a confirmar.
 
 Esse bloco vai no PR e na resposta final. Nada além disso precisa ser
 narrado.
+
+## Próximo passo
+
+Tudo ✅ → `workflow:ship-spec` (só com pedido explícito de push). Algum ❌ →
+`workflow:implement` com as "Correções pendentes" da spec.

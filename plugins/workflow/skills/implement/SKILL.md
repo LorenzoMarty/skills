@@ -56,7 +56,10 @@ infraestrutura de teste, defina o comando que demonstra o comportamento.
   comentários).
 - Um commit por REQ (ou grupo coeso), só depois de o REQ passar: `git add`
   por nome de arquivo (nunca `-A`), leia `git diff` e desfaça hunks alheios.
-  Nunca `--no-verify`; hook falhou → corrija e faça commit novo.
+  Nunca `--no-verify`; hook falhou → corrija e faça commit novo (não `--amend`).
+  Sem `pre-commit` instalado em `$(git rev-parse --git-common-dir)/hooks`, rode
+  `pre-commit run --files <arquivos>` na mão. **Nunca `git push`** daqui: push
+  só com pedido explícito, via `workflow:ship-spec` (exceto na GitHub Action).
 - Achou algo errado fora do escopo? Anote para o PR em vez de corrigir.
 - Decisão não prevista na spec: se reversível, decida e registre como
   `Assumido:` no PR; se não, pare e pergunte.
@@ -84,9 +87,16 @@ projeto não disser nada diferente:
   ainda houver REQ aberto, pare e peça orientação em vez de repetir o ciclo
   com `verify`.
 - Marque o ticket como em revisão (label `in-review`, se existir).
+- Spec com `status: ready` passa a `in-progress` ao começar.
 
-## 7. Próximo ticket
+## 7. Próximo ticket ou fim
 
 Em modo backlog, volte ao passo 1 com o próximo ticket desbloqueado. Antes,
 avalie o contexto: se já estiver pesado, rode `workflow:handoff` e encerre;
 a próxima sessão continua dali.
+
+## Próximo passo
+
+Tudo ✅ no `workflow:verify` → ofereça `workflow:ship-spec` (PR e issues).
+Algum ❌ → o `verify` devolve "Correções pendentes" na spec e você volta ao
+passo 3 com elas.

@@ -12,7 +12,7 @@ mexe em estrutura (frontmatter, links, entradas de MOC).
 
 **Comportamento sem confirmação:** esta skill é uma exceção deliberada à regra geral do
 [[Contrato do Vault — E_Mind]] de não mover/apagar nota sem confirmar. A exceção foi decidida
-explicitamente pelo usuário via `spec-interview` (`.claude/specs/organizar-vault-diario/spec.md`),
+explicitamente pelo usuário via `write-spec` (`.claude/specs/organizar-vault-diario/spec.md`),
 ciente do risco. Aplique a correção e siga — não pare para perguntar "posso mover/apagar X?".
 
 ## Pipeline

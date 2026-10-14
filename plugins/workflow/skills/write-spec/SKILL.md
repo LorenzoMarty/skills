@@ -73,12 +73,10 @@ Confira se `.claude/specs/` está no `.gitignore`:
 
 ## Próximo passo
 
-- Spec salva com `status: ready` → rode `workflow:spec-router` (grava
-  `skills-plan.yaml` ao lado da spec; `implement` e `verify` o consomem).
-- Decisão arquitetural (ADR-worthy) → avise e registre com
-  `knowledge:claude-obsidian` (`/decisao`).
-
-- Itens em **Em aberto** que bloqueiam → pergunte agora, agrupados, e
-  aguarde.
-- Cabe numa sessão → `workflow:implement` com esta spec.
-- Não cabe → `workflow:to-tickets` com esta spec.
+1. **Em aberto** que bloqueia → pergunte agora, agrupado, e aguarde. Ideia
+   ainda vaga → `workflow:grill-me` antes de redigir.
+2. Spec salva com `status: ready` → `workflow:spec-router` (grava
+   `skills-plan.yaml` ao lado da spec; `implement` e `verify` o consomem).
+3. Cabe numa sessão → `workflow:implement`. Não cabe → `workflow:to-tickets`.
+4. Decisão arquitetural (ADR-worthy) → avise e registre com
+   `knowledge:claude-obsidian` (`/decisao`).

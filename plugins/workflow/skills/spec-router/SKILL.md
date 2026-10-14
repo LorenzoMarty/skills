@@ -1,12 +1,12 @@
 ---
 name: spec-router
-description: Depois que uma spec (`spec-interview`) é aprovada, seleciona o conjunto mínimo de skills para implementá-la, valida cada nome contra o inventário real instalado, resolve sobreposição entre skills concorrentes e grava o plano em `.claude/specs/<slug>/skills-plan.yaml` — separado do spec.md. Nunca implementa código nem faz pergunta de produto (isso é da entrevista). Invocado automaticamente pela `spec-interview` logo após a aprovação, e pode ser rodado manualmente para re-rotear uma spec existente ("roteia skills pra spec X", "/spec-router").
+description: Depois que uma spec (`write-spec`) é aprovada, seleciona o conjunto mínimo de skills para implementá-la, valida cada nome contra o inventário real instalado, resolve sobreposição entre skills concorrentes e grava o plano em `.claude/specs/<slug>/skills-plan.yaml` — separado do spec.md. Nunca implementa código nem faz pergunta de produto (isso é da entrevista). Invocado automaticamente pela `write-spec` logo após a aprovação, e pode ser rodado manualmente para re-rotear uma spec existente ("roteia skills pra spec X", "/spec-router").
 ---
 
 # Spec Router
 
 Objetivo: decidir **quais skills usar, quais não, e por quê** — para uma spec já aprovada, antes de
-`implement-spec` rodar. Não escolhe requisito, não muda escopo, não implementa nada.
+`implement` rodar. Não escolhe requisito, não muda escopo, não implementa nada.
 
 Esta skill nasceu de uma auditoria real do workflow: a seleção de skill feita na entrevista era boa
 na decisão, mas se perdia entre a decisão e a implementação (skill recomendada, nunca invocada, sem
@@ -15,7 +15,7 @@ registro do motivo). O papel desta skill é fechar esse buraco: toda decisão vi
 
 ## Quando roda
 
-- **Automático**: chamado pela `spec-interview` assim que o usuário aprova a spec, antes de
+- **Automático**: chamado pela `write-spec` assim que o usuário aprova a spec, antes de
   perguntar se quer implementar.
 - **Manual**: usuário pode pedir para re-rotear uma spec (nova rodada de `needs-changes`, ou spec
   antiga sem `skills-plan.yaml`).
@@ -89,7 +89,7 @@ fora mesmo sendo popular.
 ### Etapa 5 — Selecionar o conjunto mínimo
 
 Objetivo: cobertura máxima dos REQs com o menor número de skills, evitando redundância. Reaproveite
-as regras de desempate que já existiam na `spec-interview` (não as reinvente):
+as regras de desempate abaixo (não as reinvente):
 
 1. Evidência de stack vence banco genérico.
 2. Uma skill por necessidade — se duas cobrem >70% do mesmo escopo, escolha uma só. Desempate: uso
@@ -103,10 +103,10 @@ as regras de desempate que já existiam na `spec-interview` (não as reinvente):
 Cada skill selecionada recebe uma prioridade:
 
 - **`required`**: necessária para a implementação ser considerada completa. Se não puder ser
-  invocada, `implement-spec` registra motivo/impacto/alternativa/se bloqueia — nunca ignora.
+  invocada, `implement` registra motivo/impacto/alternativa/se bloqueia — nunca ignora.
 - **`conditional`**: só roda se um gatilho definido ocorrer durante a implementação (ex.:
   `accesslint` só se surgir componente interativo novo). Declare o(s) gatilho(s) por escrito.
-- **`optional`**: ajuda, não é necessária. `implement-spec` só invoca se houver benefício real.
+- **`optional`**: ajuda, não é necessária. `implement` só invoca se houver benefício real.
 
 **Conjunto vazio é uma saída válida** — se a tarefa está totalmente coberta pelas convenções do
 projeto:
@@ -185,10 +185,10 @@ conflicts:
     decision: react-best-practices
     reason: "skill própria, alinhada às convenções documentadas em claude/CLAUDE.md; vercel:react-best-practices é genérica de plugin, sem ajuste ao projeto."
 
-discovered_during_implementation: []   # implement-spec preenche se achar necessidade nova
+discovered_during_implementation: []   # implement preenche se achar necessidade nova
 
 validation:
-  required: [review-spec]
+  required: [verify]
 
 outcome:
   status: pending           # pending | ok | gaps-found
@@ -222,8 +222,8 @@ padrão do projeto").
 - **`rejected`**: incompatível, redundante, inadequada ou de baixa qualidade — vai para `excluded`
   com o motivo, não para `selected`.
 
-Depois que `implement-spec`/`review-spec` rodarem sobre uma skill `experimental` ou `verified`,
-`review-spec` registra:
+Depois que `implement`/`verify` rodarem sobre uma skill `experimental` ou `verified`,
+`verify` registra:
 
 ```yaml
 evaluation:
@@ -240,9 +240,14 @@ skill for candidata (via `historical_evidence` na Etapa 4). Sem pontuação agre
 
 - Nunca implementa código, nunca escreve fora de `skills-plan.yaml` (e a linha `## Skills` no
   `spec.md`, se ausente).
-- Nunca faz pergunta de produto ao usuário — isso é `spec-interview`. Se a spec não tem informação
+- Nunca faz pergunta de produto ao usuário — isso é `write-spec`. Se a spec não tem informação
   suficiente pra rotear, registra a lacuna em `selection.notes` e segue com o que dá. Correção de
-  escopo volta para `spec-interview`, não é resolvida aqui.
+  escopo volta para `write-spec`, não é resolvida aqui.
 - Nunca inventa nome de skill fora do inventário real (Etapa 3).
-- `implement-spec` consome o plano, não reabre a Etapa 5 — só pode propor adição registrada
+- `implement` consome o plano, não reabre a Etapa 5 — só pode propor adição registrada
   (`discovered_during_implementation`), nunca substituição silenciosa.
+
+## Próximo passo
+
+Plano gravado → `workflow:to-tickets` (se não cabe numa sessão) ou
+`workflow:implement`, que consome o `skills-plan.yaml`.
