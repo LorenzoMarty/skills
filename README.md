@@ -65,19 +65,26 @@ scripts/install-in-project.sh ~/projetos/Estoque-NY
 
 Mescla o marketplace e uma lista de permissões em `.claude/settings.json`,
 cria o `CLAUDE.md` a partir do modelo e adiciona
-`.github/workflows/claude-agent.yml`. Preencha os comandos no `CLAUDE.md`: são
-eles que o `verify` roda.
+`.github/workflows/claude.yml` (se o projeto já tiver um, mantém o dele; copie
+de lá só `label_trigger`, `plugin_marketplaces` e `plugins`). Preencha os
+comandos no `CLAUDE.md`: são eles que o `verify` roda.
+
+> O `.claude/settings.json` do projeto **oferece** instalar o marketplace na
+> primeira vez que você abre o projeto no Claude Code interativo; ele não
+> instala sozinho em modo não interativo. Na nuvem, quem garante os plugins é
+> o setup script acima; na GitHub Action, os campos `plugins` do `claude.yml`.
 
 ## Automação: o agente trabalhando sozinho
 
-Com `claude-agent.yml` no projeto (requer o
+Com o `claude.yml` do modelo no projeto (requer o
 [Claude GitHub App](https://github.com/apps/claude) e o secret
 `CLAUDE_CODE_OAUTH_TOKEN`, gerado com `claude setup-token`):
 
 1. Você escreve ou pede a spec (`workflow:write-spec`) e os tickets
    (`workflow:to-tickets`) → issues com a label `ready-for-agent`.
-2. Cada issue com essa label dispara o agente, que roda `workflow:implement` e
-   abre um PR com o relatório de verificação.
+2. Cada issue com essa label dispara o agente, que roda `workflow:implement`,
+   sobe a branch e comenta o link do PR já preenchido (a Action não abre o PR
+   sozinha: o clique final é seu).
 3. Você revisa o relatório e aprova; pede ajustes comentando `@claude` no PR.
 4. Ticket que precisa de decisão sua volta com a label `needs-human`.
 

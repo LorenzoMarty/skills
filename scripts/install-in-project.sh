@@ -50,7 +50,7 @@ copy_if_missing() {
 
 copy_if_missing "$TPL/CLAUDE.md" "$project/CLAUDE.md"
 if [[ $with_action -eq 1 ]]; then
-  copy_if_missing "$TPL/.github/workflows/claude-agent.yml" "$project/.github/workflows/claude-agent.yml"
+  copy_if_missing "$TPL/.github/workflows/claude.yml" "$project/.github/workflows/claude.yml"
 fi
 
 echo

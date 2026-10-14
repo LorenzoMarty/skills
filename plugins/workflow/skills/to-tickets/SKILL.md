@@ -114,5 +114,5 @@ In either form, avoid specific file paths or code snippets — they go stale fas
 Com os tickets publicados, o primeiro da fronteira vai para
 `workflow:implement`. Para o agente seguir a fila sozinho:
 `workflow:implement backlog`, ou aplique a label `ready-for-agent` e deixe a
-GitHub Action do projeto (`templates/project/.github/workflows/claude-agent.yml`
+GitHub Action do projeto (`templates/project/.github/workflows/claude.yml`
 do repositório LorenzoMarty/skills) pegar cada um.
