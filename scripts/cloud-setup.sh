@@ -7,11 +7,11 @@
 #
 # Local: bash scripts/cloud-setup.sh
 #
-# Plugins instalados: variável SKILLS_PLUGINS (padrão: "workflow dev design").
+# Plugins instalados: variável SKILLS_PLUGINS (padrão: "workflow knowledge dev design").
 set -euo pipefail
 
 MARKETPLACE="${SKILLS_MARKETPLACE:-LorenzoMarty/skills}"
-PLUGINS="${SKILLS_PLUGINS:-workflow dev design}"
+PLUGINS="${SKILLS_PLUGINS:-workflow knowledge dev design}"
 
 if ! command -v claude >/dev/null 2>&1; then
   echo "claude CLI não encontrado; nada a instalar." >&2

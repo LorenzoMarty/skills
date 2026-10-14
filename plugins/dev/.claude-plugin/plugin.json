@@ -1,7 +1,7 @@
 {
   "name": "dev",
-  "version": "0.1.0",
-  "description": "Apoio ao desenvolvimento: documentação atual de bibliotecas.",
+  "version": "0.2.0",
+  "description": "Apoio ao desenvolvimento: documentação de bibliotecas, boas práticas de Postgres e descoberta de skills.",
   "author": {
     "name": "Lorenzo Marty"
   }

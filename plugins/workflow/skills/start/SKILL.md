@@ -25,7 +25,7 @@ Exemplo:
 
 ## 0. Contexto primeiro
 
-Se o projeto tem `.claude/knowledge/`, rode `personal:knowledge-manager`
+Se o projeto tem `.claude/knowledge/`, rode `knowledge:knowledge-manager`
 **antes** de ler código ou docs (regra 1 da Política de Trabalho). Se não
 tem e a tarefa não é trivial, rode o bootstrap dele (custo ~0).
 
@@ -44,7 +44,7 @@ tem e a tarefa não é trivial, rode o bootstrap dele (custo ~0).
 | Contexto acabando ou fim de sessão | `handoff` |
 
 Os nomes sem prefixo são do plugin `workflow` (ex.: `workflow:implement`);
-`personal:` são as skills pessoais do Lorenzo.
+as de outros plugins levam o prefixo (`design:`, `dev:`, `knowledge:`).
 Invoque cada skill pela ferramenta Skill quando chegar a vez dela. Não
 reproduza as instruções de uma skill dentro de outra.
 
@@ -84,30 +84,30 @@ Nenhuma entrega termina sem `workflow:verify`. O usuário revisa o
 precisa mostrar comandos rodados, saídas relevantes, critérios atendidos e
 o que ficou de fora.
 
-## Skills pessoais (plugin `personal`)
+## Skills de apoio
 
-A cadeia `workflow` é a canônica. Ela se liga às skills pessoais assim:
+A cadeia se liga a estas skills:
 
 | Momento | Skill |
 |---|---|
-| Antes de explorar | `personal:knowledge-manager` |
-| Spec salva | `personal:spec-router` (grava `skills-plan.yaml`) |
-| Diff grande ou área sensível | `personal:quality-gate` (dentro do `verify`) |
-| Spec `done`, PR e issues | `personal:ship-spec` (só com pedido explícito de push) |
-| Tarefa concluída, não trivial | `personal:claude-obsidian` (registro) ou `/decisao` |
-| Ver specs paradas | `personal:specs-status` |
+| Antes de explorar | `knowledge:knowledge-manager` |
+| Spec salva | `workflow:spec-router` (grava `skills-plan.yaml`) |
+| Diff grande ou área sensível | `workflow:quality-gate` (dentro do `verify`) |
+| Spec `done`, PR e issues | `workflow:ship-spec` (só com pedido explícito de push) |
+| Tarefa concluída, não trivial | `knowledge:claude-obsidian` (registro) ou `/decisao` |
+| Ver specs paradas | `workflow:specs-status` |
 
 Duas cadeias coexistem, com papéis diferentes:
 
 - **Validar ideia** → `grill-me` (testa o plano em rodadas, decide o que
   fazer) → `write-spec`.
-- **Especificar o que será feito** → `personal:spec-interview` (uma pergunta
+- **Especificar o que será feito** → `workflow:spec-interview` (uma pergunta
   por vez, salva a spec, encadeia `spec-router` → `implement-spec` →
   `review-spec` → `ship-spec`). Use quando já se sabe o que quer e falta
   detalhar requisitos e critério de concluído.
 
 `workflow:implement`/`verify` são a execução orientada a ticket e PR;
-`personal:implement-spec`/`review-spec` são a execução orientada a spec.
+`workflow:implement-spec`/`review-spec` são a execução orientada a spec.
 
 ## Contrato com o projeto
 

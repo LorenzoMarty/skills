@@ -1,0 +1,8 @@
+{
+  "name": "knowledge",
+  "version": "0.1.0",
+  "description": "Memória entre sessões e vault Obsidian: cache semântico por projeto, registros, decisões e manutenção do vault.",
+  "author": {
+    "name": "Lorenzo Marty"
+  }
+}

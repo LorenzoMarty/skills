@@ -31,7 +31,7 @@ corpo e os comentários.
 
 ## 1.5. Reaproveitar contexto
 
-Antes de explorar, rode `personal:knowledge-manager` sobre a área do pedido
+Antes de explorar, rode `knowledge:knowledge-manager` sobre a área do pedido
 (custo ~0) e leia o que ele apontar no Obsidian (hub, `Arquitetura.md`,
 `Decisões.md`). Não pergunte ao usuário o que já está registrado; decisão
 anterior que conflite com o pedido vira item em **Em aberto**.
@@ -73,10 +73,10 @@ Confira se `.claude/specs/` está no `.gitignore`:
 
 ## Próximo passo
 
-- Spec salva com `status: ready` → rode `personal:spec-router` (grava
+- Spec salva com `status: ready` → rode `workflow:spec-router` (grava
   `skills-plan.yaml` ao lado da spec; `implement` e `verify` o consomem).
 - Decisão arquitetural (ADR-worthy) → avise e registre com
-  `personal:claude-obsidian` (`/decisao`).
+  `knowledge:claude-obsidian` (`/decisao`).
 
 - Itens em **Em aberto** que bloqueiam → pergunte agora, agrupados, e
   aguarde.

@@ -1,7 +1,7 @@
 {
   "name": "design",
-  "version": "0.1.0",
-  "description": "Telas, wireframes, design systems, geração de imagem e mídia.",
+  "version": "0.2.0",
+  "description": "Front-end e design: telas, wireframes, design systems, UI/UX, motion, Three.js, imagem e mídia.",
   "author": {
     "name": "Lorenzo Marty"
   }

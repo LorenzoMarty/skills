@@ -11,22 +11,32 @@
     {
       "name": "workflow",
       "source": "./plugins/workflow",
-      "description": "Fluxo de trabalho: da ideia à entrega — roteador, entrevista, spec, tickets, implementação autônoma, verificação e handoff."
+      "description": "Fluxo de trabalho: da ideia à entrega — roteador, entrevista, spec, tickets, implementação, verificação, revisão, PR e handoff."
     },
     {
       "name": "dev",
       "source": "./plugins/dev",
-      "description": "Apoio ao desenvolvimento: documentação atual de bibliotecas."
+      "description": "Apoio ao desenvolvimento: documentação de bibliotecas, boas práticas de Postgres e descoberta de skills."
     },
     {
       "name": "design",
       "source": "./plugins/design",
-      "description": "Telas, wireframes, design systems, geração de imagem e mídia."
+      "description": "Front-end e design: telas, wireframes, design systems, UI/UX, motion, Three.js, imagem e mídia."
     },
     {
-      "name": "personal",
-      "source": "./plugins/personal",
-      "description": "Skills pessoais do Lorenzo: especificação, Obsidian, marketing, front-end, Three.js e observabilidade."
+      "name": "knowledge",
+      "source": "./plugins/knowledge",
+      "description": "Memória entre sessões e vault Obsidian: cache semântico por projeto, registros, decisões e manutenção do vault."
+    },
+    {
+      "name": "marketing",
+      "source": "./plugins/marketing",
+      "description": "Marketing e conteúdo: copy, SEO, CRO, lançamento, social, marca, imagem e vídeo de marketing."
+    },
+    {
+      "name": "ops",
+      "source": "./plugins/ops",
+      "description": "Observabilidade e segurança: OpenTelemetry, PromQL, dashboards Grafana e auditoria de skills e GitHub Actions."
     }
   ]
 }

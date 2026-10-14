@@ -1,0 +1,8 @@
+{
+  "name": "ops",
+  "version": "0.1.0",
+  "description": "Observabilidade e segurança: OpenTelemetry, PromQL, dashboards Grafana e auditoria de skills e GitHub Actions.",
+  "author": {
+    "name": "Lorenzo Marty"
+  }
+}

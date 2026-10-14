@@ -12,10 +12,12 @@ As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
 
 | Plugin | Conteúdo |
 |---|---|
-| `workflow` | Fluxo da ideia ao PR verificado: roteador, entrevista, spec, tickets, implementação, verificação, handoff |
-| `personal` | Especificação por entrevista, memória e Obsidian, marketing, front-end/3D, observabilidade, segurança |
-| `design` | Telas, wireframes, design systems, imagem e mídia (algumas skills usam APIs pagas) |
-| `dev` | Documentação atual de bibliotecas (exige o MCP do Context7) |
+| `workflow` | Fluxo da ideia ao PR verificado: roteador, entrevista, spec, tickets, implementação, verificação, revisão, entrega, handoff |
+| `knowledge` | Memória entre sessões e vault Obsidian: cache por projeto, registros, decisões, manutenção do vault |
+| `design` | Front-end e design: telas, wireframes, design systems, UI/UX, motion, Three.js, imagem e mídia (algumas skills usam APIs pagas) |
+| `marketing` | Copy, SEO, CRO, lançamento, social, marca, imagem e vídeo de marketing |
+| `ops` | Observabilidade e segurança: OpenTelemetry, PromQL, dashboards Grafana, auditoria de skills e GitHub Actions |
+| `dev` | Documentação atual de bibliotecas (exige o MCP do Context7), boas práticas de Postgres, descoberta de skills |
 
 Parte das skills é fork de [rtadewald/skills](https://github.com/rtadewald/skills),
 veja [UPSTREAM.md](UPSTREAM.md).
@@ -41,24 +43,24 @@ ideia vaga ─► grill-me ─► write-spec ─► to-tickets ─► implement 
 
 | Cadeia | Para quê | Passos |
 |---|---|---|
-| `workflow` | **Validar a ideia** e executar por ticket/PR | `grill-me` (rodadas sobre a árvore de decisões) → `write-spec` → `to-tickets` → `implement` → `verify` |
-| `personal` | **Especificar o que será feito** | `spec-interview` (uma pergunta por vez) → `spec-router` → `implement-spec` → `review-spec` → `ship-spec` |
+| Validar a ideia | Decidir o que fazer e executar por ticket/PR | `grill-me` (rodadas sobre a árvore de decisões) → `write-spec` → `to-tickets` → `implement` → `verify` |
+| Especificar o que será feito | Detalhar requisitos e critério de concluído | `spec-interview` (uma pergunta por vez) → `spec-router` → `implement-spec` → `review-spec` → `ship-spec` |
 
 As duas gravam `.claude/specs/<slug>/spec.md` com requisitos `REQ-N` e
 `status: draft | ready | in-progress | needs-changes | done`.
 `implement` e `verify` também consomem o `skills-plan.yaml` do `spec-router`
 e chamam `quality-gate` em diff grande.
 
-### Ligação com as skills pessoais
+### Skills de apoio ao fluxo
 
 | Momento | Skill |
 |---|---|
-| Antes de explorar código | `personal:knowledge-manager` |
-| Spec salva | `personal:spec-router` |
-| Diff grande ou área sensível | `personal:quality-gate` |
-| Spec `done`: PR e issues | `personal:ship-spec` (só com pedido explícito de push) |
-| Tarefa concluída, não trivial | `personal:claude-obsidian` |
-| Specs paradas em qualquer projeto | `personal:specs-status` |
+| Antes de explorar código | `knowledge:knowledge-manager` |
+| Spec salva | `workflow:spec-router` |
+| Diff grande ou área sensível | `workflow:quality-gate` |
+| Spec `done`: PR e issues | `workflow:ship-spec` (só com pedido explícito de push) |
+| Tarefa concluída, não trivial | `knowledge:claude-obsidian` |
+| Specs paradas em qualquer projeto | `workflow:specs-status` |
 
 ## Catálogo de skills
 
@@ -73,21 +75,40 @@ e chamam `quality-gate` em diff grande.
 | `implement` | Teste que falha → código → verify → commit e PR |
 | `verify` | Checks, evidência por REQ, leitura adversarial do diff, relatório |
 | `handoff` | Compacta a conversa num documento para outra sessão continuar |
+| `spec-interview` | Entrevista (uma pergunta por vez) e salva a spec |
+| `spec-router` | Escolhe as skills para a spec e grava o `skills-plan.yaml` |
+| `implement-spec` | Implementa exatamente os `REQ-N` da spec, commit por REQ |
+| `review-spec` | Compara o construído com a spec, em runtime; devolve correções |
+| `ship-spec` | Prepara o PR da spec e cria issues (Jira na Qiron, GitHub nos pessoais) |
+| `specs-status` | Lista specs pendentes em todos os projetos |
+| `quality-gate` | `verify` + `code-review` + `simplify` sobre o diff |
+| `find-bugs` | Procura bugs e falhas de segurança nas mudanças da branch |
 
-### `personal`
+### `knowledge`
 
-| Grupo | Skills |
+| Skill | Faz |
 |---|---|
-| Especificação e entrega | `spec-interview`, `spec-router`, `implement-spec`, `review-spec`, `ship-spec`, `specs-status`, `quality-gate` |
-| Memória e Obsidian | `knowledge-manager`, `claude-obsidian`, `organizar-vault`, `diluir-vault`, `token-trace` |
-| Qualidade e segurança | `find-bugs`, `skill-scanner`, `agentic-actions-auditor` |
-| Marketing e conteúdo | `ad-creative`, `ai-seo`, `brand`, `content-strategy`, `copy-editing`, `copywriting`, `cro`, `launch`, `marketing-psychology`, `seo-audit`, `social`, `humanizer`, `mkt-image`, `mkt-video`, `brag` |
-| Front-end e design | `design-dna`, `motion-design`, `react-best-practices`, `ui-styling`, `ui-ux-pro-max`, `web-design-guidelines` |
-| Three.js | `threejs-fundamentals`, `-geometry`, `-materials`, `-textures`, `-lighting`, `-shaders`, `-animation`, `-interaction`, `-loaders`, `-postprocessing` |
-| Dados e observabilidade | `supabase-postgres-best-practices`, `opentelemetry`, `promql`, `dashboarding` |
-| Descoberta | `find-skills` |
+| `knowledge-manager` | Cache semântico por projeto: reaproveita o que já se sabe antes de ler código |
+| `claude-obsidian` | Grava registros, decisões e arquitetura no vault Obsidian ao concluir tarefa |
+| `organizar-vault` | Corrige problemas estruturais do vault (órfãs, links quebrados, frontmatter) |
+| `diluir-vault` | Condensa, padroniza e agrupa notas atômicas |
+| `token-trace` | Mostra onde os tokens foram gastos por tarefa e subagent (só por chamada explícita) |
 
-`token-trace` tem `disable-model-invocation`: só roda quando você a chama.
+### `marketing`
+
+`ad-creative`, `ai-seo`, `brand`, `content-strategy`, `copy-editing`,
+`copywriting`, `cro`, `launch`, `marketing-psychology`, `seo-audit`, `social`,
+`humanizer`, `mkt-image`, `mkt-video`, `brag`.
+
+### `ops`
+
+| Skill | Faz |
+|---|---|
+| `opentelemetry` | Instrumenta apps e envia métricas/logs/traces ao Grafana |
+| `promql` | Escreve e otimiza consultas PromQL |
+| `dashboarding` | Cria dashboards Grafana via API |
+| `skill-scanner` | Escaneia skills em busca de problemas de segurança |
+| `agentic-actions-auditor` | Audita GitHub Actions com agentes de IA |
 
 ### `design`
 
@@ -102,12 +123,21 @@ e chamam `quality-gate` em diff grande.
 | `nano-banana-pro` | Gera/edita imagem com a API Nano Banana Pro do Google (API paga) |
 | `fal-ai` | Chama as APIs do fal.ai, p. ex. detecção de caixas de texto/UI para `img-to-html` (API paga; só por chamada explícita) |
 | `mediabunny` | Manipulação de mídia com a biblioteca Mediabunny |
+| `design-dna` | Extrai, define e aplica o "design DNA" (tokens, estilo, efeitos) a partir de referências |
+| `motion-design` | Princípios e implementação de animação e transições |
+| `react-best-practices` | Performance em React/Next.js (Vercel) |
+| `ui-styling` | shadcn/ui, Tailwind e temas |
+| `ui-ux-pro-max` | Base de estilos, paletas, fontes e diretrizes de UX |
+| `web-design-guidelines` | Revisa UI contra as Web Interface Guidelines |
+| `threejs-*` | Three.js: `fundamentals`, `geometry`, `materials`, `textures`, `lighting`, `shaders`, `animation`, `interaction`, `loaders`, `postprocessing` |
 
 ### `dev`
 
 | Skill | Faz |
 |---|---|
 | `context7-mcp` | Consulta a documentação atual de bibliotecas via Context7 |
+| `supabase-postgres-best-practices` | Boas práticas de Postgres (Supabase) |
+| `find-skills` | Descobre e instala skills |
 
 ## Instalação
 
@@ -120,7 +150,7 @@ curl -fsSL https://raw.githubusercontent.com/LorenzoMarty/skills/main/scripts/cl
 ```
 
 Toda sessão nova nesse ambiente já começa com os plugins instalados e
-atualizados. Para escolher plugins: `SKILLS_PLUGINS="workflow dev" bash`.
+atualizados. Para escolher plugins: `SKILLS_PLUGINS="workflow knowledge dev" bash` (padrão: `workflow knowledge dev design`).
 
 ### Na sua máquina
 

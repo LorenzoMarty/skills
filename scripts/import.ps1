@@ -4,8 +4,8 @@
   deste repositório. Versão Windows/PowerShell do import.sh.
 
 .EXAMPLE
-  powershell -ExecutionPolicy Bypass -File scripts\import.ps1
-  powershell -ExecutionPolicy Bypass -File scripts\import.ps1 -Source C:\caminho\.claude\skills -Plugin personal
+  powershell -ExecutionPolicy Bypass -File scripts\import.ps1 -Plugin <plugin>
+  powershell -ExecutionPolicy Bypass -File scripts\import.ps1 -Source C:\caminho\.claude\skills -Plugin <plugin>
 
 .NOTES
   - Só copia pastas que têm SKILL.md.
@@ -16,7 +16,7 @@
 #>
 param(
   [string]$Source = (Join-Path $HOME ".claude\skills"),
-  [string]$Plugin = "personal",
+  [Parameter(Mandatory)][string]$Plugin,
   [string[]]$Exclude = @(),
   [switch]$Force
 )
@@ -27,7 +27,7 @@ $Dest = Join-Path $Root "plugins\$Plugin\skills"
 $Conflicts = Join-Path $Root "imports\conflicts"
 
 if (-not (Test-Path (Join-Path $Root "plugins\$Plugin\.claude-plugin\plugin.json"))) {
-  throw "Plugin '$Plugin' não existe em plugins\. Use um dos existentes (personal, workflow, dev, design)."
+  throw "Plugin '$Plugin' não existe em plugins\. Use um dos existentes (workflow, knowledge, marketing, design, ops, dev)."
 }
 if (-not (Test-Path $Source)) { throw "Pasta de origem não encontrada: $Source" }
 
