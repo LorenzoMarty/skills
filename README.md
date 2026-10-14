@@ -12,7 +12,7 @@ As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
 
 | Plugin | Conteúdo |
 |---|---|
-| `workflow` | Fluxo da ideia ao PR verificado: roteador, entrevista, spec, tickets, implementação, verificação, revisão, entrega, handoff |
+| `workflow` | Fluxo da ideia ao PR verificado: roteador, entrevista, spec, tickets, implementação, verificação, entrega, handoff |
 | `knowledge` | Memória entre sessões e vault Obsidian: cache por projeto, registros, decisões, manutenção do vault |
 | `design` | Front-end e design: telas, wireframes, design systems, UI/UX, motion, Three.js, imagem e mídia (algumas skills usam APIs pagas) |
 | `marketing` | Copy, SEO, CRO, lançamento, social, marca, imagem e vídeo de marketing |
@@ -28,10 +28,25 @@ veja [UPSTREAM.md](UPSTREAM.md).
 de `SessionStart` lembra o Claude de usá-lo em toda sessão.
 
 ```
-ideia vaga ─► grill-me ─► write-spec ─► to-tickets ─► implement ─► verify ─► PR
-                                                          │            │
-                                                          └─ handoff ◄─┘ (contexto cheio)
+grill-me ─► write-spec ─► spec-router ─► to-tickets ─► implement ─► verify ─► ship-spec
+(se vago)                                (se grande)       ▲           │
+                                                           └ correções ┘
+handoff: em qualquer ponto, quando o contexto estiver acabando
 ```
+
+Um fluxo só, com uma skill por etapa:
+
+| Etapa | Skill | Saída |
+|---|---|---|
+| Decidir | `grill-me` | árvore de decisões resolvida (só se a ideia é vaga) |
+| Especificar | `write-spec` | `.claude/specs/<slug>/spec.md` com `REQ-N` e `status` |
+| Rotear skills | `spec-router` | `skills-plan.yaml` ao lado da spec |
+| Quebrar | `to-tickets` | tickets com dependências (só se não cabe numa sessão) |
+| Executar | `implement` | commits por REQ, teste primeiro |
+| Provar | `verify` | relatório por REQ; fecha a spec (`done` ou `needs-changes`, que volta ao `implement`) |
+| Entregar | `ship-spec` | PR e issues (só com pedido explícito de push) |
+
+`status` da spec: `draft | ready | in-progress | needs-changes | done`.
 
 - **Modo autônomo por padrão:** decisões reversíveis são tomadas e registradas
   como `Assumido:`; só para quando a decisão é irreversível ou muda escopo.
@@ -39,30 +54,16 @@ ideia vaga ─► grill-me ─► write-spec ─► to-tickets ─► implement 
 - **Economia de contexto:** exploração vai para subagentes, a spec guarda as
   decisões, um ticket por sessão, `handoff` antes de estourar.
 
-### Duas cadeias de spec
-
-| Cadeia | Para quê | Passos |
-|---|---|---|
-| Validar a ideia | Decidir o que fazer e executar por ticket/PR | `grill-me` (rodadas sobre a árvore de decisões) → `write-spec` → `to-tickets` → `implement` → `verify` |
-| Especificar o que será feito | Detalhar requisitos e critério de concluído | `spec-interview` (uma pergunta por vez) → `spec-router` → `implement-spec` → `review-spec` → `ship-spec` |
-
-As duas gravam `.claude/specs/<slug>/spec.md` com requisitos `REQ-N` e
-`status: draft | ready | in-progress | needs-changes | done`.
-`implement` e `verify` também consomem o `skills-plan.yaml` do `spec-router`
-e chamam `quality-gate` em diff grande.
-
-### Skills de apoio ao fluxo
-
-| Momento | Skill |
-|---|---|
-| Antes de explorar código | `knowledge:knowledge-manager` |
-| Spec salva | `workflow:spec-router` |
-| Diff grande ou área sensível | `workflow:quality-gate` |
-| Spec `done`: PR e issues | `workflow:ship-spec` (só com pedido explícito de push) |
-| Tarefa concluída, não trivial | `knowledge:claude-obsidian` |
-| Specs paradas em qualquer projeto | `workflow:specs-status` |
+Skills de apoio: `knowledge:knowledge-manager` (antes de explorar),
+`workflow:quality-gate` (chamado pelo `verify` em diff grande ou área
+sensível), `knowledge:claude-obsidian` (registro ao concluir),
+`workflow:specs-status` (specs paradas em qualquer projeto) e
+`workflow:find-bugs` (caça bugs na branch).
 
 ## Catálogo de skills
+
+Legenda: 💲 usa API paga · ✋ só roda por chamada explícita (`disable-model-invocation`).
+Para auditar o catálogo: `python3 scripts/audit.py`.
 
 ### `workflow`
 
@@ -71,18 +72,15 @@ e chamam `quality-gate` em diff grande.
 | `start` | Roteador: classifica o pedido, escolhe cadeia e modo |
 | `grill-me` | Entrevista em rodadas até não sobrar decisão implícita |
 | `write-spec` | Escreve a spec com `REQ-N` testáveis |
-| `to-tickets` | Quebra a spec em tickets com dependências declaradas e publica no tracker |
-| `implement` | Teste que falha → código → verify → commit e PR |
-| `verify` | Checks, evidência por REQ, leitura adversarial do diff, relatório |
-| `handoff` | Compacta a conversa num documento para outra sessão continuar |
-| `spec-interview` | Entrevista (uma pergunta por vez) e salva a spec |
 | `spec-router` | Escolhe as skills para a spec e grava o `skills-plan.yaml` |
-| `implement-spec` | Implementa exatamente os `REQ-N` da spec, commit por REQ |
-| `review-spec` | Compara o construído com a spec, em runtime; devolve correções |
+| `to-tickets` | Quebra a spec em tickets com dependências e publica no tracker |
+| `implement` | Teste que falha → código → verify → commit e PR |
+| `verify` | Checks, evidência por REQ, leitura adversarial do diff, fecha a spec |
 | `ship-spec` | Prepara o PR da spec e cria issues (Jira na Qiron, GitHub nos pessoais) |
-| `specs-status` | Lista specs pendentes em todos os projetos |
-| `quality-gate` | `verify` + `code-review` + `simplify` sobre o diff |
+| `quality-gate` | `code-review` + `simplify` sobre o diff |
 | `find-bugs` | Procura bugs e falhas de segurança nas mudanças da branch |
+| `specs-status` | Lista specs pendentes em todos os projetos |
+| `handoff` | Compacta a conversa num documento para outra sessão continuar |
 
 ### `knowledge`
 
@@ -92,13 +90,27 @@ e chamam `quality-gate` em diff grande.
 | `claude-obsidian` | Grava registros, decisões e arquitetura no vault Obsidian ao concluir tarefa |
 | `organizar-vault` | Corrige problemas estruturais do vault (órfãs, links quebrados, frontmatter) |
 | `diluir-vault` | Condensa, padroniza e agrupa notas atômicas |
-| `token-trace` | Mostra onde os tokens foram gastos por tarefa e subagent (só por chamada explícita) |
+| `token-trace` ✋ | Mostra onde os tokens foram gastos por tarefa e subagent |
 
 ### `marketing`
 
-`ad-creative`, `ai-seo`, `brand`, `content-strategy`, `copy-editing`,
-`copywriting`, `cro`, `launch`, `marketing-psychology`, `seo-audit`, `social`,
-`humanizer`, `mkt-image`, `mkt-video`, `brag`.
+| Skill | Faz |
+|---|---|
+| `brand` | Voz de marca, identidade visual, mensagens e consistência |
+| `copywriting` | Escreve copy de página: home, landing, preços, produto |
+| `copy-editing` | Edita e revisa copy existente em passadas |
+| `humanizer` | Detecta 53 padrões de texto de IA e reescreve em cinco vozes |
+| `content-strategy` | Planeja temas, clusters e calendário editorial |
+| `social` | Posts e calendário para LinkedIn, X, Instagram, TikTok; escuta e engajamento |
+| `ad-creative` | Gera e itera títulos, textos e variações de anúncio pago |
+| `cro` | Otimiza conversão de páginas e formulários |
+| `launch` | Plano de lançamento: produto, feature, Product Hunt, go-to-market |
+| `marketing-psychology` | Princípios psicológicos e modelos mentais aplicados a marketing |
+| `seo-audit` | Audita SEO técnico e on-page de um site |
+| `ai-seo` | Otimiza conteúdo para ser citado por buscadores de IA (AEO/GEO) |
+| `mkt-image` 💲 | Cria e edita imagens de marketing (heros, social, mockups) |
+| `mkt-video` 💲 | Produz vídeo de marketing com ferramentas de IA ou Remotion/Hyperframes |
+| `brag` | Transforma o site do projeto num vídeo de lançamento curto (Hyperframes) |
 
 ### `ops`
 
@@ -114,28 +126,28 @@ e chamam `quality-gate` em diff grande.
 
 | Skill | Faz |
 |---|---|
-| `plan-screen` | Compara três propostas de tela com wireframes e gera os mocks em paralelo (só por chamada explícita) |
+| `plan-screen` ✋ | Compara três propostas de tela com wireframes e gera os mocks em paralelo |
 | `to-wireframe` | Cria wireframe tipado (ASCII ou SVG) a partir de imagem ou brief |
-| `img-to-html` | Recria um mock de UI como HTML/CSS/JS estático, em etapas com aprovação (só por chamada explícita) |
-| `extract-ds` | Monta um design system a partir de um site local pronto, preservando as animações |
-| `to-img` | Gera imagens em paralelo via OpenRouter |
-| `openrouter-img` | Gera/edita imagem via OpenRouter com vários modelos (API paga; só por chamada explícita) |
-| `nano-banana-pro` | Gera/edita imagem com a API Nano Banana Pro do Google (API paga) |
-| `fal-ai` | Chama as APIs do fal.ai, p. ex. detecção de caixas de texto/UI para `img-to-html` (API paga; só por chamada explícita) |
-| `mediabunny` | Manipulação de mídia com a biblioteca Mediabunny |
-| `design-dna` | Extrai, define e aplica o "design DNA" (tokens, estilo, efeitos) a partir de referências |
+| `img-to-html` ✋ | Recria um mock de UI como HTML/CSS/JS estático, em etapas com aprovação |
+| `extract-ds` | Monta um design system a partir de um site local pronto, preservando animações |
+| `design-dna` | Extrai, define e aplica o "design DNA" (tokens, estilo, efeitos) |
+| `ui-ux-pro-max` | Base de estilos, paletas, fontes e diretrizes de UX |
+| `ui-styling` | shadcn/ui, Tailwind e temas |
+| `web-design-guidelines` | Revisa UI contra as Web Interface Guidelines |
 | `motion-design` | Princípios e implementação de animação e transições |
 | `react-best-practices` | Performance em React/Next.js (Vercel) |
-| `ui-styling` | shadcn/ui, Tailwind e temas |
-| `ui-ux-pro-max` | Base de estilos, paletas, fontes e diretrizes de UX |
-| `web-design-guidelines` | Revisa UI contra as Web Interface Guidelines |
+| `to-img` 💲 | Gera imagens em paralelo via OpenRouter |
+| `openrouter-img` 💲✋ | Gera/edita imagem via OpenRouter com vários modelos |
+| `nano-banana-pro` 💲 | Gera/edita imagem com a API Nano Banana Pro do Google |
+| `fal-ai` 💲✋ | Chama as APIs do fal.ai, p. ex. detecção de caixas de UI para `img-to-html` |
+| `mediabunny` | Manipulação de mídia com a biblioteca Mediabunny |
 | `threejs-*` | Three.js: `fundamentals`, `geometry`, `materials`, `textures`, `lighting`, `shaders`, `animation`, `interaction`, `loaders`, `postprocessing` |
 
 ### `dev`
 
 | Skill | Faz |
 |---|---|
-| `context7-mcp` | Consulta a documentação atual de bibliotecas via Context7 |
+| `context7-mcp` | Consulta a documentação atual de bibliotecas via Context7 (exige o MCP) |
 | `supabase-postgres-best-practices` | Boas práticas de Postgres (Supabase) |
 | `find-skills` | Descobre e instala skills |
 
@@ -201,6 +213,7 @@ Numa sessão interativa, `workflow:implement backlog` faz o mesmo em sequência.
 | Comando | Faz |
 |---|---|
 | `python3 scripts/validate.py` | Estrutura e frontmatter (o CI roda o mesmo + `claude plugin validate`) |
+| `python3 scripts/audit.py` | Falhas de qualidade do catálogo: gatilho na description, API paga, tamanho, README, referências quebradas |
 | `scripts/new-plugin.sh <nome> "<descrição>"` | Cria plugin |
 | `scripts/new-skill.sh <nome> <plugin>` | Cria skill a partir do modelo |
 | `scripts/import.sh <pasta> <plugin>` (Windows: `scripts\import.ps1`) | Traz skills de outra pasta para um plugin |

@@ -8,6 +8,7 @@ skill.
 
 ```bash
 python3 scripts/validate.py          # estrutura + frontmatter (rode antes de todo commit)
+python3 scripts/audit.py             # falhas de qualidade do catálogo (avisos)
 claude plugin validate .             # manifestos
 scripts/new-skill.sh <nome> <plugin>
 scripts/new-plugin.sh <nome> "<descrição>"
