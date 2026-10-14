@@ -23,6 +23,12 @@ Exemplo:
 > → feature pequena, critérios claros → `workflow:write-spec` (curta) →
 > `workflow:implement` → `workflow:verify` → PR.
 
+## 0. Contexto primeiro
+
+Se o projeto tem `.claude/knowledge/`, rode `personal:knowledge-manager`
+**antes** de ler código ou docs (regra 1 da Política de Trabalho). Se não
+tem e a tarefa não é trivial, rode o bootstrap dele (custo ~0).
+
 ## 1. Classificar o pedido
 
 | Pedido | Cadeia |
@@ -37,7 +43,8 @@ Exemplo:
 | Dúvida sobre API de biblioteca | `dev:context7-mcp` antes de escrever código |
 | Contexto acabando ou fim de sessão | `handoff` |
 
-Os nomes sem prefixo são do plugin `workflow` (ex.: `workflow:implement`).
+Os nomes sem prefixo são do plugin `workflow` (ex.: `workflow:implement`);
+`personal:` são as skills pessoais do Lorenzo.
 Invoque cada skill pela ferramenta Skill quando chegar a vez dela. Não
 reproduza as instruções de uma skill dentro de outra.
 
@@ -77,12 +84,23 @@ Nenhuma entrega termina sem `workflow:verify`. O usuário revisa o
 precisa mostrar comandos rodados, saídas relevantes, critérios atendidos e
 o que ficou de fora.
 
-## Skills pessoais
+## Skills pessoais (plugin `personal`)
 
-Se houver skills locais com o mesmo papel (ex.: `spec-router`,
-`implement-spec`, `review-spec`, `quality-gate`, `knowledge-manager`,
-`claude-obsidian`), siga a política do `CLAUDE.md` global e do projeto sobre
-quando usá-las; esta cadeia é o padrão quando nada disser o contrário.
+A cadeia `workflow` é a canônica. Ela se liga às skills pessoais assim:
+
+| Momento | Skill |
+|---|---|
+| Antes de explorar | `personal:knowledge-manager` |
+| Spec salva | `personal:spec-router` (grava `skills-plan.yaml`) |
+| Diff grande ou área sensível | `personal:quality-gate` (dentro do `verify`) |
+| Spec `done`, PR e issues | `personal:ship-spec` (só com pedido explícito de push) |
+| Tarefa concluída, não trivial | `personal:claude-obsidian` (registro) ou `/decisao` |
+| Ver specs paradas | `personal:specs-status` |
+
+`personal:spec-interview`, `personal:implement-spec` e `personal:review-spec`
+são as versões antigas de `grill-me`/`write-spec`, `implement` e `verify`.
+Continuam instaladas porque o fluxo Maestri (`personal:maestri-workflow`) e
+o `ship-spec` as citam; fora do Maestri, prefira as do `workflow`.
 
 ## Contrato com o projeto
 

@@ -1,6 +1,6 @@
 ---
 slug: <slug>
-status: draft            # draft | approved | in-progress | done
+status: ready           # draft | ready | in-progress | needs-changes | done
 revision_count: 0
 created: <AAAA-MM-DD>
 issue: <#N ou link, se houver>

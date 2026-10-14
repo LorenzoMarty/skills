@@ -46,6 +46,26 @@ Corrija o que for seu e rode os checks de novo. Para mudanças grandes,
 delegue esta leitura a um subagente com o diff e a spec, e trate o que ele
 achar como hipótese a confirmar.
 
+## 3.5. Escopo, plano de skills e qualidade
+
+- Liste à parte o que foi construído e **não** está na spec (scope creep):
+  não reprova sozinho, mas o usuário precisa saber.
+- Se existir `skills-plan.yaml`: skill `required` (ou `conditional` cujo
+  gatilho disparou) não invocada e sem justificativa é achado; se o REQ que
+  ela cobria falhou, diga o vínculo. `optional` nunca gera achado.
+- Diff grande ou em área sensível (auth, pagamento, permissão) →
+  `personal:quality-gate` além da leitura acima.
+
+## 3.6. Fechar a spec
+
+- Tudo ✅ → `status: done` na spec e `outcome.status` no `skills-plan.yaml`.
+  Tarefa não trivial → sugira `personal:claude-obsidian` (sem encadear) e
+  ofereça `personal:ship-spec` numa linha (push só com pedido explícito).
+- Algum ❌ → escreva "Correções pendentes" na spec (arquivo, o que está
+  errado, o que deve acontecer), `status: needs-changes` e volte para
+  `workflow:implement`. Se uma skill do plano não invocada causou a falha, a
+  correção manda invocá-la explicitamente.
+
 ## 4. Relatório
 
 ```markdown

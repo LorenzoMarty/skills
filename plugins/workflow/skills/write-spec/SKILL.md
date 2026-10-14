@@ -29,6 +29,13 @@ Use o que já está na conversa (inclusive a saída de `grill-me`, que vai para
 o **Log da entrevista**). Se o usuário passar uma issue ou arquivo, leia o
 corpo e os comentários.
 
+## 1.5. Reaproveitar contexto
+
+Antes de explorar, rode `personal:knowledge-manager` sobre a área do pedido
+(custo ~0) e leia o que ele apontar no Obsidian (hub, `Arquitetura.md`,
+`Decisões.md`). Não pergunte ao usuário o que já está registrado; decisão
+anterior que conflite com o pedido vira item em **Em aberto**.
+
 ## 2. Explorar o código
 
 Delegue a um subagente Explore: módulos afetados, padrões existentes que a
@@ -65,6 +72,11 @@ Confira se `.claude/specs/` está no `.gitignore`:
   desta máquina.
 
 ## Próximo passo
+
+- Spec salva com `status: ready` → rode `personal:spec-router` (grava
+  `skills-plan.yaml` ao lado da spec; `implement` e `verify` o consomem).
+- Decisão arquitetural (ADR-worthy) → avise e registre com
+  `personal:claude-obsidian` (`/decisao`).
 
 - Itens em **Em aberto** que bloqueiam → pergunte agora, agrupados, e
   aguarde.

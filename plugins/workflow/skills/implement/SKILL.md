@@ -28,6 +28,11 @@ checks, abre o PR com o relatório do `verify`.
   referencia (`.claude/specs/<slug>/spec.md`). Se a spec não existir nesta
   máquina (pasta ignorada pelo git), a issue é o contrato. Sem spec e sem
   critério claro → rode `workflow:write-spec` curta antes.
+- `.claude/specs/<slug>/skills-plan.yaml`, se existir: invoque toda skill
+  `required`, avalie o `trigger` das `conditional`, e marque o `status` de
+  cada uma (`invoked`, `skipped-justified`, `unavailable`, `not-applicable`).
+  Skill não usada nunca fica em silêncio: registre motivo e impacto no REQ.
+  Skill nova descoberta no caminho vai em `discovered_during_implementation`.
 - Comandos de verificação: `CLAUDE.md` do projeto; se não houver, CI e
   arquivos de build.
 - Confira se os bloqueadores do ticket estão fechados. Se não estiverem,
@@ -49,6 +54,9 @@ infraestrutura de teste, defina o comando que demonstra o comportamento.
 - Mudança mínima que satisfaz os critérios. Nada fora do escopo do ticket.
 - Siga os padrões do código ao redor (nomes, estrutura, densidade de
   comentários).
+- Um commit por REQ (ou grupo coeso), só depois de o REQ passar: `git add`
+  por nome de arquivo (nunca `-A`), leia `git diff` e desfaça hunks alheios.
+  Nunca `--no-verify`; hook falhou → corrija e faça commit novo.
 - Achou algo errado fora do escopo? Anote para o PR em vez de corrigir.
 - Decisão não prevista na spec: se reversível, decida e registre como
   `Assumido:` no PR; se não, pare e pergunte.
@@ -70,8 +78,11 @@ projeto não disser nada diferente:
 - PR no modelo `.github/pull_request_template.md`, com `Closes #N`, o
   **relatório do verify**, as decisões `Assumido:` e os itens anotados fora
   de escopo;
-- marque os REQs como `[x]` na spec e acrescente uma linha no Log da
-  entrevista (`implement (<data>): ...`).
+- marque os REQs como `[x]` (ou `[~]` parcial) na spec, some 1 em
+  `revision_count` e acrescente no Log da entrevista o hash curto de cada
+  REQ (`implement (<data>): REQ-2 → a1b2c3d`). Se `revision_count` >= 4 e
+  ainda houver REQ aberto, pare e peça orientação em vez de repetir o ciclo
+  com `verify`.
 - Marque o ticket como em revisão (label `in-review`, se existir).
 
 ## 7. Próximo ticket
