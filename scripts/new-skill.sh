@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Cria uma skill nova a partir de templates/skill.
 #
-# Uso: scripts/new-skill.sh <nome-da-skill> [plugin]
+# Uso: scripts/new-skill.sh <nome-da-skill> <plugin>
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 name="${1:-}"
-plugin="${2:-core}"
+plugin="${2:-}"
 
-if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
-  echo "uso: scripts/new-skill.sh <nome-em-kebab-case> [plugin]" >&2
+if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ || -z "$plugin" ]]; then
+  echo "uso: scripts/new-skill.sh <nome-em-kebab-case> <plugin>" >&2
   exit 1
 fi
 dest="$ROOT/plugins/$plugin/skills/$name"

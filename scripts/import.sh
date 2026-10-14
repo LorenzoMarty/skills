@@ -2,11 +2,11 @@
 # Importa skills de uma pasta local para um plugin deste repositório.
 #
 # Uso:
-#   scripts/import.sh <origem> [plugin] [--force]
+#   scripts/import.sh <origem> <plugin> [--force]
 #
 # <origem> pode ser uma pasta de skills (ex.: ~/.claude/skills ou
 # <projeto>/.claude/skills) ou uma única skill (pasta com SKILL.md).
-# [plugin] é o plugin de destino em plugins/ (padrão: core).
+# [plugin] é o plugin de destino em plugins/ (workflow, dev, design, ...).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,11 +20,11 @@ for arg in "$@"; do
 done
 
 src="${args[0]:-}"
-plugin="${args[1]:-core}"
+plugin="${args[1]:-}"
 dest="$ROOT/plugins/$plugin/skills"
 
-if [[ -z "$src" || ! -d "$src" ]]; then
-  echo "uso: scripts/import.sh <origem> [plugin] [--force]" >&2
+if [[ -z "$src" || ! -d "$src" || -z "$plugin" ]]; then
+  echo "uso: scripts/import.sh <origem> <plugin> [--force]" >&2
   exit 1
 fi
 if [[ ! -f "$ROOT/plugins/$plugin/.claude-plugin/plugin.json" ]]; then

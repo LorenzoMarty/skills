@@ -9,9 +9,19 @@
   },
   "plugins": [
     {
-      "name": "core",
-      "source": "./plugins/core",
-      "description": "Skills de uso geral no dia a dia."
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "Fluxo de trabalho: da ideia à entrega — roteador, entrevista, spec, tickets, implementação autônoma, verificação e handoff."
+    },
+    {
+      "name": "dev",
+      "source": "./plugins/dev",
+      "description": "Apoio ao desenvolvimento: documentação atual de bibliotecas."
+    },
+    {
+      "name": "design",
+      "source": "./plugins/design",
+      "description": "Telas, wireframes, design systems, geração de imagem e mídia."
     }
   ]
 }

@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "SessionStart",
+    "additionalContext": "Fluxo de trabalho (plugin workflow): para qualquer tarefa não trivial, invoque primeiro a skill `workflow:start`; ela escolhe a cadeia (grill-me → write-spec → to-tickets → implement → verify → handoff) e as regras de contexto. Modo padrão: autônomo — decida o que for reversível, registre como \"Assumido:\", e só entregue com o relatório de `workflow:verify`."
+  }
+}
