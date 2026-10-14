@@ -41,8 +41,9 @@ Regras:
 Sessões na nuvem perdem o disco ao terminar, então:
 
 1. Há PR ou issue aberta para o trabalho → publique como comentário nela.
-2. Senão, há spec em `docs/specs/` → acrescente uma seção `## Handoff` nela e
-   faça commit e push.
+2. Senão, há spec em `.claude/specs/<slug>/spec.md` **versionada** →
+   acrescente uma seção `## Handoff` nela e faça commit e push. (Se a pasta
+   estiver no `.gitignore`, a spec não sai da máquina: use o item 1 ou 3.)
 3. Senão → salve no diretório temporário do sistema e mostre o caminho.
 
 Termine dizendo, em uma linha, como retomar: por exemplo

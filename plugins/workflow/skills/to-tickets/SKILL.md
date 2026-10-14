@@ -90,7 +90,7 @@ A reference to the parent issue on the tracker (if the source was an existing is
 
 ## Spec
 
-Link to the spec under `docs/specs/` this ticket comes from.
+Link to the spec (`.claude/specs/<slug>/spec.md`) this ticket comes from. If the specs folder is gitignored, paste the spec's Objetivo, Requisitos and Critérios de concluído here instead — the issue is then the contract.
 
 ## What to build
 

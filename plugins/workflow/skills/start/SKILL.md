@@ -77,6 +77,13 @@ Nenhuma entrega termina sem `workflow:verify`. O usuário revisa o
 precisa mostrar comandos rodados, saídas relevantes, critérios atendidos e
 o que ficou de fora.
 
+## Skills pessoais
+
+Se houver skills locais com o mesmo papel (ex.: `spec-router`,
+`implement-spec`, `review-spec`, `quality-gate`, `knowledge-manager`,
+`claude-obsidian`), siga a política do `CLAUDE.md` global e do projeto sobre
+quando usá-las; esta cadeia é o padrão quando nada disser o contrário.
+
 ## Contrato com o projeto
 
 Se o projeto tiver `CLAUDE.md`, ele manda nos comandos (lint, testes,

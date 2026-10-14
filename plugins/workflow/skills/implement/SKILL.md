@@ -19,14 +19,15 @@ Processo: **carregar o contrato → explorar → teste que falha → implementar
 verificar → commit e PR → próximo ticket.**
 
 Exemplo: `workflow:implement #42` → lê a issue 42 e a spec ligada a ela,
-cria `claude/42-export-csv`, escreve `test_export_csv`, implementa, roda os
+cria `feat/42-export-csv`, escreve `test_export_csv`, implementa, roda os
 checks, abre o PR com o relatório do `verify`.
 
 ## 1. Carregar o contrato
 
 - Ticket (issue ou `.scratch/<feature>/issues/NN-*.md`) e a spec que ele
-  referencia. Sem spec e sem critério claro → rode `workflow:write-spec`
-  curta antes.
+  referencia (`.claude/specs/<slug>/spec.md`). Se a spec não existir nesta
+  máquina (pasta ignorada pelo git), a issue é o contrato. Sem spec e sem
+  critério claro → rode `workflow:write-spec` curta antes.
 - Comandos de verificação: `CLAUDE.md` do projeto; se não houver, CI e
   arquivos de build.
 - Confira se os bloqueadores do ticket estão fechados. Se não estiverem,
@@ -60,10 +61,17 @@ que tentou e peça ajuda.
 
 ## 6. Commit e PR
 
-- Branch `claude/<ticket>-<slug>` (ou a que o ambiente determinar).
-- Commits pequenos com mensagem no imperativo.
-- PR com: link do ticket, resumo de 2–3 linhas, o **relatório do verify**,
-  decisões `Assumido:` e itens anotados fora de escopo.
+Siga o **Fluxo Git** do `CLAUDE.md` do projeto. O padrão do Lorenzo, quando o
+projeto não disser nada diferente:
+
+- branch `tipo/<n>-descricao` (ex.: `feat/12-export-csv`); se o ambiente
+  impuser uma branch, use a do ambiente;
+- Conventional Commits em inglês, no imperativo, um assunto por commit;
+- PR no modelo `.github/pull_request_template.md`, com `Closes #N`, o
+  **relatório do verify**, as decisões `Assumido:` e os itens anotados fora
+  de escopo;
+- marque os REQs como `[x]` na spec e acrescente uma linha no Log da
+  entrevista (`implement (<data>): ...`).
 - Marque o ticket como em revisão (label `in-review`, se existir).
 
 ## 7. Próximo ticket

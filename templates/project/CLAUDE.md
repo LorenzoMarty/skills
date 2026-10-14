@@ -22,7 +22,7 @@
 ## Fluxo
 
 - Tarefas não triviais começam por `workflow:start`.
-- Specs em `docs/specs/`; tickets como GitHub Issues com `ready-for-agent`.
+- Specs em `.claude/specs/<slug>/spec.md`; tickets como GitHub Issues com `ready-for-agent`.
 - Pronto = `workflow:verify` verde e relatório no PR.
 
 ## Convenções

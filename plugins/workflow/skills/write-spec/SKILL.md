@@ -17,16 +17,17 @@ sem ler a conversa.
 Processo: **reunir contexto → explorar o código → redigir → checar
 testabilidade → salvar → apontar o próximo passo.**
 
-Exemplo de critério ruim e bom:
+Exemplo de requisito ruim e bom:
 
 - ruim: "o export deve ser rápido"
-- bom: "`GET /reports/stock.csv` com 10k itens responde em < 2 s no teste
-  `test_export_large`"
+- bom: "REQ-1: `GET /reports/stock.csv` com 10k itens responde em < 2 s
+  no teste `test_export_large`"
 
 ## 1. Reunir contexto
 
-Use o que já está na conversa (inclusive a saída de `grill-me`). Se o usuário
-passar uma issue ou arquivo, leia o corpo e os comentários.
+Use o que já está na conversa (inclusive a saída de `grill-me`, que vai para
+o **Log da entrevista**). Se o usuário passar uma issue ou arquivo, leia o
+corpo e os comentários.
 
 ## 2. Explorar o código
 
@@ -39,8 +40,8 @@ Peça só a conclusão com caminhos de arquivo.
 Use o modelo em [references/spec-template.md](references/spec-template.md).
 Regras:
 
-- Critérios de aceite **observáveis**: cada um vira um teste ou um comando
-  com saída esperada.
+- Requisitos numerados `REQ-N` e **observáveis**: cada um vira um teste ou
+  um comando com saída esperada. Commits, PR e verificação citam o REQ.
 - Decisões que você tomou sozinho entram como `Assumido:` com o motivo.
   Perguntas que só o usuário responde entram em **Em aberto**, cada uma com a
   resposta que você recomenda.
@@ -51,9 +52,17 @@ Regras:
 
 ## 4. Salvar
 
-Salve em `docs/specs/<AAAA-MM-DD>-<slug>.md` no projeto (crie a pasta se não
-existir) e faça commit junto com o primeiro código, ou sozinho se o trabalho
-for continuar em outra sessão.
+Salve em `.claude/specs/<slug>/spec.md` (o padrão dos projetos do Lorenzo),
+salvo se o `CLAUDE.md` do projeto indicar outro lugar. A cada revisão, some 1
+em `revision_count`.
+
+Confira se `.claude/specs/` está no `.gitignore`:
+
+- **Versionada** → commit junto com o primeiro código.
+- **Ignorada** (spec só local) → a spec não chega a outras sessões nem à
+  GitHub Action. Copie Objetivo, Requisitos e Critérios de concluído para o
+  corpo da issue; a issue passa a ser o contrato para quem trabalhar fora
+  desta máquina.
 
 ## Próximo passo
 

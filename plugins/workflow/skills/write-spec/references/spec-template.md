@@ -1,33 +1,37 @@
-# <Título>
+---
+slug: <slug>
+status: draft            # draft | approved | in-progress | done
+revision_count: 0
+created: <AAAA-MM-DD>
+issue: <#N ou link, se houver>
+---
 
-**Status:** rascunho | aprovada | implementada
-**Issue/PR:** <link, se houver>
+# <Título>
 
 ## Objetivo
 
 Uma ou duas frases: que problema resolve e para quem.
 
-## Fora de escopo
+## Requisitos
 
-- O que parece fazer parte, mas não entra agora.
+<!-- [ ] pendente · [~] em andamento · [x] feito. Cada REQ é observável. -->
+
+- [ ] REQ-1: <comportamento observável> — verificado por `<teste ou comando>`
+- [ ] REQ-2: <comportamento observável> — verificado por `<teste ou comando>`
+
+## Critérios de concluído
+
+- <comandos do CLAUDE.md verdes: lint, typecheck, testes>
+- <verificação de runtime, se houver superfície de UI/rota/pipeline>
 
 ## Decisões
 
 - <decisão> — <motivo>
 - Assumido: <decisão tomada sem o usuário> — <motivo; como reverter>
 
-## Critérios de aceite
+## Fora de escopo
 
-- [ ] <comportamento observável> — verificado por `<teste ou comando>`
-- [ ] <comportamento observável> — verificado por `<teste ou comando>`
-
-## Como verificar
-
-```bash
-<lint>
-<typecheck>
-<testes>
-```
+- O que parece fazer parte, mas não entra agora.
 
 ## Riscos
 
@@ -36,3 +40,8 @@ Uma ou duas frases: que problema resolve e para quem.
 ## Em aberto
 
 - <pergunta> → recomendado: <resposta>
+
+## Log da entrevista
+
+- P: <pergunta> / R: <resposta>
+- <skill> (<data>): <o que foi feito, evidência>
