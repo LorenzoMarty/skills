@@ -1,38 +1,113 @@
 # Skills
 
-Minhas skills para o [Claude Code](https://claude.com/claude-code), num só
-repositório e distribuídas como **marketplace de plugins** (`lorenzo-skills`).
-Valem para todos os projetos, local e na nuvem, e se encadeiam num fluxo que
-vai da ideia ao PR verificado com o mínimo de revisão humana.
+Skills do Lorenzo para o [Claude Code](https://claude.com/claude-code),
+distribuídas como **marketplace de plugins** (`lorenzo-skills`). Valem para
+todos os projetos, local e na nuvem. Este README é a referência do que existe
+e de como as peças se encaixam; as convenções para escrever skills ficam em
+[CLAUDE.md](CLAUDE.md).
 
-## O fluxo
+As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
+
+## Plugins
+
+| Plugin | Conteúdo |
+|---|---|
+| `workflow` | Fluxo da ideia ao PR verificado: roteador, entrevista, spec, tickets, implementação, verificação, handoff |
+| `personal` | Especificação por entrevista, memória e Obsidian, marketing, front-end/3D, observabilidade, segurança |
+| `design` | Telas, wireframes, design systems, imagem e mídia (algumas skills usam APIs pagas) |
+| `dev` | Documentação atual de bibliotecas (exige o MCP do Context7) |
+
+Parte das skills é fork de [rtadewald/skills](https://github.com/rtadewald/skills),
+veja [UPSTREAM.md](UPSTREAM.md).
+
+## O fluxo de trabalho
+
+`workflow:start` é o roteador: classifica o pedido e escolhe a cadeia. Um hook
+de `SessionStart` lembra o Claude de usá-lo em toda sessão.
 
 ```
 ideia vaga ─► grill-me ─► write-spec ─► to-tickets ─► implement ─► verify ─► PR
-                 ▲            ▲                           │            │
-                 └──── start (roteador: escolhe a cadeia) ┘   handoff ◄┘ (contexto cheio)
+                                                          │            │
+                                                          └─ handoff ◄─┘ (contexto cheio)
 ```
 
-- **`workflow:start`** classifica o pedido e escolhe a cadeia. Um hook de
-  `SessionStart` lembra o Claude de usá-lo em toda sessão.
 - **Modo autônomo por padrão:** decisões reversíveis são tomadas e registradas
   como `Assumido:`; só para quando a decisão é irreversível ou muda escopo.
 - **Você revisa o relatório do `verify`**, não o diff linha a linha.
 - **Economia de contexto:** exploração vai para subagentes, a spec guarda as
   decisões, um ticket por sessão, `handoff` antes de estourar.
 
-## Plugins
+### Duas cadeias de spec
 
-| Plugin | Skills | Para quê |
+| Cadeia | Para quê | Passos |
 |---|---|---|
-| `workflow` | `start`, `grill-me`, `write-spec`, `to-tickets`, `implement`, `verify`, `handoff` | o fluxo de trabalho do dia a dia |
-| `dev` | `context7-mcp` | documentação atual de bibliotecas (exige MCP do Context7) |
-| `personal` | suas skills importadas de `~/.claude/skills` | skills pessoais (Obsidian, knowledge-manager, spec-router…) |
-| `design` | `plan-screen`, `to-wireframe`, `img-to-html`, `extract-ds`, `to-img`, `openrouter-img`, `nano-banana-pro`, `fal-ai`, `mediabunny` | telas, wireframes, design systems, imagem e mídia (algumas usam APIs pagas) |
+| `workflow` | **Validar a ideia** e executar por ticket/PR | `grill-me` (rodadas sobre a árvore de decisões) → `write-spec` → `to-tickets` → `implement` → `verify` |
+| `personal` | **Especificar o que será feito** | `spec-interview` (uma pergunta por vez) → `spec-router` → `implement-spec` → `review-spec` → `ship-spec` |
 
-As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
-Parte delas é fork de [rtadewald/skills](https://github.com/rtadewald/skills),
-veja [UPSTREAM.md](UPSTREAM.md).
+As duas gravam `.claude/specs/<slug>/spec.md` com requisitos `REQ-N` e
+`status: draft | ready | in-progress | needs-changes | done`.
+`implement` e `verify` também consomem o `skills-plan.yaml` do `spec-router`
+e chamam `quality-gate` em diff grande.
+
+### Ligação com as skills pessoais
+
+| Momento | Skill |
+|---|---|
+| Antes de explorar código | `personal:knowledge-manager` |
+| Spec salva | `personal:spec-router` |
+| Diff grande ou área sensível | `personal:quality-gate` |
+| Spec `done`: PR e issues | `personal:ship-spec` (só com pedido explícito de push) |
+| Tarefa concluída, não trivial | `personal:claude-obsidian` |
+| Specs paradas em qualquer projeto | `personal:specs-status` |
+
+## Catálogo de skills
+
+### `workflow`
+
+| Skill | Faz |
+|---|---|
+| `start` | Roteador: classifica o pedido, escolhe cadeia e modo |
+| `grill-me` | Entrevista em rodadas até não sobrar decisão implícita |
+| `write-spec` | Escreve a spec com `REQ-N` testáveis |
+| `to-tickets` | Quebra a spec em tickets com dependências declaradas e publica no tracker |
+| `implement` | Teste que falha → código → verify → commit e PR |
+| `verify` | Checks, evidência por REQ, leitura adversarial do diff, relatório |
+| `handoff` | Compacta a conversa num documento para outra sessão continuar |
+
+### `personal`
+
+| Grupo | Skills |
+|---|---|
+| Especificação e entrega | `spec-interview`, `spec-router`, `implement-spec`, `review-spec`, `ship-spec`, `specs-status`, `quality-gate` |
+| Memória e Obsidian | `knowledge-manager`, `claude-obsidian`, `organizar-vault`, `diluir-vault`, `token-trace` |
+| Qualidade e segurança | `find-bugs`, `skill-scanner`, `agentic-actions-auditor` |
+| Marketing e conteúdo | `ad-creative`, `ai-seo`, `brand`, `content-strategy`, `copy-editing`, `copywriting`, `cro`, `launch`, `marketing-psychology`, `seo-audit`, `social`, `humanizer`, `mkt-image`, `mkt-video`, `brag` |
+| Front-end e design | `design-dna`, `motion-design`, `react-best-practices`, `ui-styling`, `ui-ux-pro-max`, `web-design-guidelines` |
+| Three.js | `threejs-fundamentals`, `-geometry`, `-materials`, `-textures`, `-lighting`, `-shaders`, `-animation`, `-interaction`, `-loaders`, `-postprocessing` |
+| Dados e observabilidade | `supabase-postgres-best-practices`, `opentelemetry`, `promql`, `dashboarding` |
+| Descoberta | `find-skills` |
+
+`token-trace` tem `disable-model-invocation`: só roda quando você a chama.
+
+### `design`
+
+| Skill | Faz |
+|---|---|
+| `plan-screen` | Compara três propostas de tela com wireframes e gera os mocks em paralelo (só por chamada explícita) |
+| `to-wireframe` | Cria wireframe tipado (ASCII ou SVG) a partir de imagem ou brief |
+| `img-to-html` | Recria um mock de UI como HTML/CSS/JS estático, em etapas com aprovação (só por chamada explícita) |
+| `extract-ds` | Monta um design system a partir de um site local pronto, preservando as animações |
+| `to-img` | Gera imagens em paralelo via OpenRouter |
+| `openrouter-img` | Gera/edita imagem via OpenRouter com vários modelos (API paga; só por chamada explícita) |
+| `nano-banana-pro` | Gera/edita imagem com a API Nano Banana Pro do Google (API paga) |
+| `fal-ai` | Chama as APIs do fal.ai, p. ex. detecção de caixas de texto/UI para `img-to-html` (API paga; só por chamada explícita) |
+| `mediabunny` | Manipulação de mídia com a biblioteca Mediabunny |
+
+### `dev`
+
+| Skill | Faz |
+|---|---|
+| `context7-mcp` | Consulta a documentação atual de bibliotecas via Context7 |
 
 ## Instalação
 
@@ -91,36 +166,23 @@ Com o `claude.yml` do modelo no projeto (requer o
 
 Numa sessão interativa, `workflow:implement backlog` faz o mesmo em sequência.
 
-## Windows (PowerShell)
-
-Os scripts `.sh` precisam de Git Bash ou WSL. No PowerShell, para trazer as
-skills de `~/.claude/skills` para o plugin `personal`:
-
-```powershell
-cd $HOME\OneDrive\Desktop
-git clone https://github.com/LorenzoMarty/skills lorenzo-skills
-cd lorenzo-skills
-powershell -ExecutionPolicy Bypass -File scripts\import.ps1
-git add -A
-git commit -m "Importa skills pessoais"
-git push
-```
-
-O script para antes de copiar se encontrar algo com cara de segredo (o
-repositório é público). Skills com nome que já existe em outro plugin vão para
-`imports/conflicts/<nome>/`, fora dos plugins, para serem mescladas depois.
-
 ## Manutenção
 
-```bash
-scripts/import.sh ~/.claude/skills workflow   # trazer skills que estão no computador
-scripts/new-plugin.sh backend "FastAPI, SQLAlchemy, Celery"
-scripts/new-skill.sh fastapi-endpoint backend
-python3 scripts/validate.py                   # o CI roda o mesmo + claude plugin validate
-claude --plugin-dir ./plugins/workflow        # testar sem publicar
-scripts/sync-upstream.sh                      # novidades no fork original
-```
+| Comando | Faz |
+|---|---|
+| `python3 scripts/validate.py` | Estrutura e frontmatter (o CI roda o mesmo + `claude plugin validate`) |
+| `scripts/new-plugin.sh <nome> "<descrição>"` | Cria plugin |
+| `scripts/new-skill.sh <nome> <plugin>` | Cria skill a partir do modelo |
+| `scripts/import.sh <pasta> <plugin>` (Windows: `scripts\import.ps1`) | Traz skills de outra pasta para um plugin |
+| `claude --plugin-dir ./plugins/workflow` | Testa um plugin sem publicar |
+| `scripts/sync-upstream.sh` | Traz novidades do fork original |
 
-Convenções de escrita das skills: [CLAUDE.md](CLAUDE.md). Depois de importar
-skills do computador, apague as cópias em `~/.claude/skills/` para não ter
-versões duplicadas.
+O `import` barra a cópia se achar algo com cara de segredo (o repositório é
+público) e manda skills com nome já existente para `imports/conflicts/<nome>/`.
+`import.ps1` aceita `-Exclude nome1,nome2` e `-Force`; chame-o direto
+(`& .\scripts\import.ps1 -Exclude a,b`), pois `powershell -File` entrega a
+lista como uma string só. No Windows, os `.sh` exigem Git Bash ou WSL.
+
+Ao mudar nome de skill ou plugin, atualize este README e
+`plugins/workflow/skills/start/SKILL.md`; ao alterar um plugin, suba a
+`version` no `plugin.json`.
