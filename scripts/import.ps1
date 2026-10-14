@@ -17,6 +17,7 @@
 param(
   [string]$Source = (Join-Path $HOME ".claude\skills"),
   [string]$Plugin = "personal",
+  [string[]]$Exclude = @(),
   [switch]$Force
 )
 
@@ -40,7 +41,7 @@ Get-ChildItem (Join-Path $Root "plugins") -Directory | ForEach-Object {
 }
 
 $candidates = if (Test-Path (Join-Path $Source "SKILL.md")) { @(Get-Item $Source) } else { Get-ChildItem $Source -Directory }
-$candidates = $candidates | Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") }
+$candidates = $candidates | Where-Object { (Test-Path (Join-Path $_.FullName "SKILL.md")) -and ($Exclude -notcontains $_.Name) }
 if (-not $candidates) { throw "Nenhuma pasta com SKILL.md em $Source" }
 
 # Varredura de segredos antes de copiar qualquer coisa.
