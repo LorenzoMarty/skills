@@ -1,0 +1,8 @@
+{
+  "name": "personal",
+  "version": "0.1.0",
+  "description": "Skills pessoais do Lorenzo (importadas de ~/.claude/skills).",
+  "author": {
+    "name": "Lorenzo Marty"
+  }
+}

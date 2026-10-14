@@ -22,6 +22,11 @@
       "name": "design",
       "source": "./plugins/design",
       "description": "Telas, wireframes, design systems, geração de imagem e mídia."
+    },
+    {
+      "name": "personal",
+      "source": "./plugins/personal",
+      "description": "Skills pessoais do Lorenzo (importadas de ~/.claude/skills)."
     }
   ]
 }

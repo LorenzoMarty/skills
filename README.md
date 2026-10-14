@@ -27,6 +27,7 @@ ideia vaga ─► grill-me ─► write-spec ─► to-tickets ─► implement 
 |---|---|---|
 | `workflow` | `start`, `grill-me`, `write-spec`, `to-tickets`, `implement`, `verify`, `handoff` | o fluxo de trabalho do dia a dia |
 | `dev` | `context7-mcp` | documentação atual de bibliotecas (exige MCP do Context7) |
+| `personal` | suas skills importadas de `~/.claude/skills` | skills pessoais (Obsidian, knowledge-manager, spec-router…) |
 | `design` | `plan-screen`, `to-wireframe`, `img-to-html`, `extract-ds`, `to-img`, `openrouter-img`, `nano-banana-pro`, `fal-ai`, `mediabunny` | telas, wireframes, design systems, imagem e mídia (algumas usam APIs pagas) |
 
 As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
@@ -89,6 +90,25 @@ Com o `claude.yml` do modelo no projeto (requer o
 4. Ticket que precisa de decisão sua volta com a label `needs-human`.
 
 Numa sessão interativa, `workflow:implement backlog` faz o mesmo em sequência.
+
+## Windows (PowerShell)
+
+Os scripts `.sh` precisam de Git Bash ou WSL. No PowerShell, para trazer as
+skills de `~/.claude/skills` para o plugin `personal`:
+
+```powershell
+cd $HOME\OneDrive\Desktop
+git clone https://github.com/LorenzoMarty/skills lorenzo-skills
+cd lorenzo-skills
+powershell -ExecutionPolicy Bypass -File scripts\import.ps1
+git add -A
+git commit -m "Importa skills pessoais"
+git push
+```
+
+O script para antes de copiar se encontrar algo com cara de segredo (o
+repositório é público). Skills com nome que já existe em outro plugin vão para
+`imports/conflicts/<nome>/`, fora dos plugins, para serem mescladas depois.
 
 ## Manutenção
 
