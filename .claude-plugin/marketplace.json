@@ -1,0 +1,17 @@
+{
+  "name": "lorenzo-skills",
+  "owner": {
+    "name": "Lorenzo Marty",
+    "url": "https://github.com/LorenzoMarty"
+  },
+  "metadata": {
+    "description": "Skills pessoais de Lorenzo Marty para Claude Code, organizadas como plugins."
+  },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "Skills de uso geral no dia a dia."
+    }
+  ]
+}
