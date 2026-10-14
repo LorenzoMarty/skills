@@ -43,7 +43,15 @@ isso já aconteceu em `spec-interview`.
      A lista de `selected` gerada pelo `spec-router` é piso, não teto, mas toda adição fica visível.
    - Se não há `skills-plan.yaml` nem seção legada: siga o julgamento normal (mesma regra de antes:
      invocar skill relevante que perceber faltando, sem formalidade de registro).
+3.5. **Explorar antes de editar.** Delegue a um subagente Explore o mapa de onde a mudança entra,
+   padrões a seguir e testes próximos (só a conclusão, com caminhos). Leia você mesmo só o que vai
+   editar. Contexto do projeto: `knowledge-manager` antes de varrer código.
 4. **Implementar literalmente os REQ-N.** Regras:
+   - **Teste primeiro**: para cada REQ observável, escreva o teste (ou defina o comando) que o
+     codifica e confirme que falha pelo motivo certo antes de implementar. Bug = teste que reproduz.
+   - Decisão não prevista na spec: se reversível e dentro do escopo, decida e registre como
+     `Assumido:` (motivo e como reverter) no log da spec; se irreversível ou muda contrato, pare e
+     pergunte (regra 7). Achou problema fora do escopo? Anote no log, não corrija.
    - Não adicionar funcionalidade fora da lista de requisitos, mesmo que pareça "óbvia" ou "boa
      prática" — isso é scope creep, e será sinalizado como tal por `review-spec`.
    - Não pular um REQ por parecer difícil; se for genuinamente inviável, pare e explique ao usuário
@@ -80,7 +88,8 @@ isso já aconteceu em `spec-interview`.
      `failed`) e `outcome.status` do plano (`ok` se nada ficou pendente sem justificativa,
      `gaps-found` se alguma `required` ficou `skipped-unjustified`/`unavailable`/`failed`).
 7. **Liste para o usuário** os REQ-N atendidos vs não atendidos, uma linha cada.
-8. **Chame automaticamente a skill `review-spec`** passando o caminho do `spec.md`, a menos que o
+8. Se um mesmo erro travar 3 tentativas seguidas, pare, registre o que tentou e peça ajuda.
+9. **Chame automaticamente a skill `review-spec`** passando o caminho do `spec.md`, a menos que o
    passo 6 tenha te feito parar por excesso de revisões.
 
 ## Regras

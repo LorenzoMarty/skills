@@ -97,10 +97,17 @@ A cadeia `workflow` é a canônica. Ela se liga às skills pessoais assim:
 | Tarefa concluída, não trivial | `personal:claude-obsidian` (registro) ou `/decisao` |
 | Ver specs paradas | `personal:specs-status` |
 
-`personal:spec-interview`, `personal:implement-spec` e `personal:review-spec`
-são as versões antigas de `grill-me`/`write-spec`, `implement` e `verify`.
-Continuam instaladas porque o fluxo Maestri (`personal:maestri-workflow`) e
-o `ship-spec` as citam; fora do Maestri, prefira as do `workflow`.
+Duas cadeias coexistem, com papéis diferentes:
+
+- **Validar ideia** → `grill-me` (testa o plano em rodadas, decide o que
+  fazer) → `write-spec`.
+- **Especificar o que será feito** → `personal:spec-interview` (uma pergunta
+  por vez, salva a spec, encadeia `spec-router` → `implement-spec` →
+  `review-spec` → `ship-spec`). Use quando já se sabe o que quer e falta
+  detalhar requisitos e critério de concluído.
+
+`workflow:implement`/`verify` são a execução orientada a ticket e PR;
+`personal:implement-spec`/`review-spec` são a execução orientada a spec.
 
 ## Contrato com o projeto
 

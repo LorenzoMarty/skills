@@ -1,6 +1,6 @@
 {
   "name": "personal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Skills pessoais do Lorenzo (importadas de ~/.claude/skills).",
   "author": {
     "name": "Lorenzo Marty"
