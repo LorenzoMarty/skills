@@ -34,3 +34,7 @@ scripts/sync-upstream.sh             # mudanças no fork original
 
 `agents/openai.yaml` existe nas skills vindas do upstream para compatibilidade
 com Codex; mantenha se editar a skill.
+
+## Contexto no Obsidian
+
+Hub: `02 - Projetos/Lorenzo Skills/Lorenzo Skills.md` (Arquitetura, Decisões e Registros na mesma pasta).
