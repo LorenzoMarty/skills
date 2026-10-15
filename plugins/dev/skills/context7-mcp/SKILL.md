@@ -14,9 +14,33 @@ Activate this skill when the user:
 - Needs API references ("What are the Supabase auth methods?")
 - Mentions specific frameworks (React, Vue, Svelte, Express, Tailwind, etc.)
 
+## Vault primeiro, Context7 depois (ponte com o Obsidian)
+
+O Context7 diz **o que a biblioteca documenta hoje**; o vault E_Mind guarda
+**o que aprendemos usando-a** (armadilhas, decisões, versão fixada). Use os
+dois, nesta ordem, sem duplicar:
+
+1. **Ler o vault (custo ~0):** `grep -ril "context7_id\|<lib>" "<vault>/01 - Notas Atômicas"`
+   filtrando por `tags: biblioteca` e o nome da lib (caminho do vault em
+   `knowledge:claude-obsidian`). Leia só as notas que baterem. Nota com
+   `context7_id` no frontmatter → **pule o Step 1** e use esse ID.
+2. **Versão:** a do projeto (`package.json`, lockfile, `Stack` do hub) manda;
+   prefira o ID versionado (`/org/proj/v15.0.0`) e cite a versão no resultado.
+3. **Consultar o Context7** (passos abaixo) para a API atual, uma pergunta
+   por conceito.
+4. **Gravar de volta só o não óbvio:** se a doc contradisse o que a IA ou o
+   vault assumiam, se houve breaking change entre versões, ou se uma
+   armadilha custou tempo, acione `knowledge:claude-obsidian` para criar ou
+   atualizar **uma nota atômica por armadilha** (`tags: [biblioteca, <lib>]`,
+   `context7_id`, `versao`, `verificado: AAAA-MM-DD`, link para o Registro).
+   Nunca copie a documentação para o vault: ele não é cache do Context7.
+5. **Reconferir quando velho:** nota com `verificado` de mais de ~6 meses, ou
+   versão do projeto diferente da nota → trate como hipótese e confirme no
+   Context7 antes de usar.
+
 ## How to Fetch Documentation
 
-### Step 1: Resolve the Library ID
+### Step 1: Resolve the Library ID (pule se o vault já tem o `context7_id`)
 
 Call `resolve-library-id` with:
 
@@ -53,4 +77,5 @@ Incorporate the fetched documentation into your response:
 - **Be specific**: Describe what to look up in the library's documentation, but keep each query to a single concept
 - **One topic per query**: Split multi-topic questions into separate `query-docs` calls — resolve the library ID once, then query per concept, unless the question is about how the concepts interact
 - **Version awareness**: When users mention versions ("Next.js 15", "React 19"), use version-specific library IDs if available from the resolution step
+- **Dentro do fluxo**: `workflow:implement` e `workflow:write-spec` consultam esta skill antes de escrever código que use uma biblioteca; versão e ID usados entram na spec/PR.
 - **Prefer official sources**: When multiple matches exist, prefer official/primary packages over community forks
