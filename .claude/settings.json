@@ -1,19 +1,12 @@
 {
   "enabledPlugins": {
-    "ifixai@ifixai-community": true,
-    "linkedin-agent@linkedin-agent-skill": true
+    "ifixai@ifixai-community": true
   },
   "extraKnownMarketplaces": {
     "ifixai-community": {
       "source": {
         "source": "github",
         "repo": "ifixai-ai/iFixAi"
-      }
-    },
-    "linkedin-agent-skill": {
-      "source": {
-        "source": "github",
-        "repo": "Jakeschincariol/linkedin-agent-skill"
       }
     }
   }
