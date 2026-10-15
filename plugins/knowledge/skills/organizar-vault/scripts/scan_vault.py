@@ -4,11 +4,12 @@ linked hub, missing MOC entries, incomplete frontmatter, and duplicate-title
 candidates. Prints a JSON report to stdout. Read-only — makes no changes.
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
 
-VAULT = Path(r"C:/Users/loren/OneDrive/Desktop/E_Mind")
+VAULT = Path(os.environ.get("E_MIND_VAULT", "~/OneDrive/Desktop/E_Mind")).expanduser()
 SCOPE_DIRS = ["01 - Notas Atômicas", "02 - Projetos", "03 - Trabalho", "05 - MOCs"]
 MOC_PROJETOS = VAULT / "05 - MOCs" / "MOC - Projetos.md"
 MOC_CONHECIMENTO = VAULT / "05 - MOCs" / "MOC - Conhecimento.md"

@@ -10,12 +10,13 @@ Não escreve nada. Toda decisão de aplicar é do Claude, guiado pelo relatório
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
 from collections import defaultdict
 
-VAULT = Path("C:/Users/loren/OneDrive/Desktop/E_Mind")
+VAULT = Path(os.environ.get("E_MIND_VAULT", "~/OneDrive/Desktop/E_Mind")).expanduser()
 SCOPE_DIRS = [
     "01 - Notas Atômicas",
     "02 - Projetos",

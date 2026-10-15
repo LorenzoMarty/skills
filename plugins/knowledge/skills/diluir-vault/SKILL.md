@@ -5,7 +5,7 @@ description: Trabalha o conteúdo do vault Obsidian E_Mind (não a estrutura): (
 
 # Diluir Vault
 
-Trabalha o **conteúdo** das notas do vault E_Mind (`C:/Users/loren/OneDrive/Desktop/E_Mind`) —
+Trabalha o **conteúdo** das notas do vault E_Mind (`~/OneDrive/Desktop/E_Mind`, ou `$E_MIND_VAULT`) —
 comprimento, formato, redundância entre notas. Diferente de [[organizar-vault]] (que mexe só em
 estrutura: links, MOC, frontmatter básico, duplicata de nome idêntico) e de `claude-obsidian` (que
 grava conteúdo *novo* vindo da sessão atual). Esta skill relê o que já existe e reescreve/funde.
@@ -25,7 +25,7 @@ lista todo arquivo criado, reescrito ou apagado — transparência depois de agi
 
 2. **Rode o scanner** (só leitura, não escreve nada):
    ```
-   python "C:/Users/loren/.claude/skills/diluir-vault/scripts/scan_notes.py"
+   python "${CLAUDE_SKILL_DIR}/scripts/scan_notes.py"
    ```
    Devolve JSON com 4 listas: `notas_longas`, `fora_padrao`, `grupos_sobrepostos`,
    `registros_destilaveis`. `grupos_sobrepostos` usa sobreposição de palavras-chave
