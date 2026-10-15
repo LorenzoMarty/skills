@@ -40,7 +40,9 @@ anterior que conflite com o pedido vira item em **Em aberto**.
 
 Delegue a um subagente Explore: módulos afetados, padrões existentes que a
 solução deve seguir, testes próximos e comandos de verificação do projeto.
-Peça só a conclusão com caminhos de arquivo.
+Peça só a conclusão com caminhos de arquivo. Se a spec depende de uma
+biblioteca, rode `dev:context7-mcp` (vault primeiro) e registre a versão e o
+ID do Context7 em **Decisões**.
 
 ## 3. Redigir
 

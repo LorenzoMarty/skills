@@ -41,6 +41,8 @@ tem e a tarefa não é trivial, rode o bootstrap dele (custo ~0).
 | Mock/imagem → HTML | `design:img-to-html` |
 | Extrair design system de um site | `design:extract-ds` |
 | Dúvida sobre API de biblioteca | `dev:context7-mcp` antes de escrever código |
+| "Toca tudo", backlog inteiro, modo contínuo | `autopilot` (push, PR, review e novas issues sem parar; só o merge é seu) |
+| Decisão, bug ou dívida fora de escopo | `file-issue` |
 | Contexto acabando ou fim de sessão | `handoff` |
 
 Os nomes sem prefixo são do plugin `workflow` (ex.: `workflow:implement`);
@@ -93,7 +95,9 @@ A cadeia se liga a estas skills:
 | Antes de explorar | `knowledge:knowledge-manager` |
 | Spec salva | `workflow:spec-router` (grava `skills-plan.yaml`; `write-spec` chama) |
 | Diff grande ou área sensível | `workflow:quality-gate` (dentro do `verify`) |
-| Spec `done`, PR e issues | `workflow:ship-spec` (só com pedido explícito de push) |
+| Spec `done`, PR e issues | `workflow:ship-spec` (push e PR autorizados; merge nunca) |
+| Qualquer issue nova | `workflow:file-issue` |
+| Doc de biblioteca | `dev:context7-mcp` (consulta o vault antes, grava o que for não óbvio) |
 | Tarefa concluída, não trivial | `knowledge:claude-obsidian` (registro) ou `/decisao` |
 | Ver specs paradas | `workflow:specs-status` |
 
@@ -110,6 +114,8 @@ grill-me ─► write-spec ─► spec-router ─► [to-tickets] ─► impleme
 - `implement`: executa por ticket ou spec, commit por REQ.
 - `verify`: confere cada REQ em runtime, fecha a spec (`done` ou
   `needs-changes`, que volta ao `implement`).
+- `ship-spec`/`autopilot`: push, PR com assignee, review e issues novas;
+  **você só aprova o merge**.
 
 Não existem mais `spec-interview`, `implement-spec` e `review-spec`: o
 trabalho deles é do `write-spec`, `implement` e `verify`.
