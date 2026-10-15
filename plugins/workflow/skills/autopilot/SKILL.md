@@ -89,6 +89,13 @@ verificada? Lacuna → `file-issue` e volte ao passo 2. Nada novo → pronto.
 - **Contexto pesado**: `workflow:handoff` e continue na sessão seguinte
   (`/loop` sem intervalo repete este prompt).
 
+## Modo Action (GitHub)
+
+Na nuvem o job `autopilot` do `claude.yml` roda **uma issue por execução** (a
+fila continua a cada merge): pule o passo 5 e o review do passo 3 (o job
+`review` do workflow comenta o PR), mas mantenha implement, push, PR e
+`file-issue`. Sem acesso ao vault Obsidian: o registro fica nas issues e no PR.
+
 ## Próximo passo
 
 Quando o usuário mergear, rode de novo: o autopilot rebaseia a pilha, pega as
