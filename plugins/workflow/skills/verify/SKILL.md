@@ -60,7 +60,7 @@ achar como hipótese a confirmar.
 
 - Tudo ✅ → `status: done` na spec e `outcome.status` no `skills-plan.yaml`.
   Tarefa não trivial → sugira `knowledge:claude-obsidian` (sem encadear) e
-  ofereça `workflow:ship-spec` numa linha (push só com pedido explícito).
+  siga para `workflow:ship-spec`. Achado fora de escopo → `workflow:file-issue`.
 - Algum ❌ → escreva "Correções pendentes" na spec (arquivo, o que está
   errado, evidência, o que deve acontecer; específico o bastante para o
   `implement` agir sem perguntar), `status: needs-changes` e volte para
@@ -87,5 +87,5 @@ narrado.
 
 ## Próximo passo
 
-Tudo ✅ → `workflow:ship-spec` (só com pedido explícito de push). Algum ❌ →
+Tudo ✅ → `workflow:ship-spec` (PR e issues, sem esperar aprovação; só o merge é seu). Algum ❌ →
 `workflow:implement` com as "Correções pendentes" da spec.

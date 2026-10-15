@@ -16,7 +16,7 @@ Chamar `mcp__headroom__headroom_retrieve` (carregar o tool via ToolSearch se ain
 
 ## 3. Índice do Obsidian (custo baixo-médio)
 
-Ler `index/obsidian-index.json` (mapa local: quais pastas/arquivos do vault correspondem a este projeto, com título+tags — nunca conteúdo). Ver `references/obsidian-integration.md` pra detalhe de como esse índice é construído/consultado. Se o índice apontar um doc candidato, ir pro nível 4 (abrir só aquele doc). Nunca varrer o vault inteiro aqui.
+Ler `index/obsidian-index.json` (mapa local: quais pastas/arquivos do vault correspondem a este projeto, com título+tags — nunca conteúdo). Ver `references/obsidian-integration.md` pra detalhe de como esse índice é construído/consultado. Se o índice apontar um doc candidato, ir pro nível 4 (abrir só aquele doc). Nunca varrer o vault inteiro aqui. Tarefa que usa biblioteca: busque as notas `tags: biblioteca` da lib (`context7_id`, versão, armadilhas) e, para a doc atual, `dev:context7-mcp` — que já parte dessas notas.
 
 ## 4. Documentação específica (custo médio)
 

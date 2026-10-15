@@ -31,6 +31,7 @@ de `SessionStart` lembra o Claude de usá-lo em toda sessão.
 grill-me ─► write-spec ─► spec-router ─► to-tickets ─► implement ─► verify ─► ship-spec
 (se vago)                                (se grande)       ▲           │
                                                            └ correções ┘
+file-issue: toda decisão, bug ou dívida descoberta vira issue na hora
 handoff: em qualquer ponto, quando o contexto estiver acabando
 ```
 
@@ -44,12 +45,14 @@ Um fluxo só, com uma skill por etapa:
 | Quebrar | `to-tickets` | tickets com dependências (só se não cabe numa sessão) |
 | Executar | `implement` | commits por REQ, teste primeiro |
 | Provar | `verify` | relatório por REQ; fecha a spec (`done` ou `needs-changes`, que volta ao `implement`) |
-| Entregar | `ship-spec` | PR e issues (só com pedido explícito de push) |
+| Entregar | `ship-spec` | push, PR com assignee e issues do que sobrou (merge é seu) |
+| Em fila | `autopilot` | backlog inteiro até o objetivo ficar pronto |
 
 `status` da spec: `draft | ready | in-progress | needs-changes | done`.
 
 - **Modo autônomo por padrão:** decisões reversíveis são tomadas e registradas
   como `Assumido:`; só para quando a decisão é irreversível ou muda escopo.
+- **Você decide só o merge** (e as issues `needs-human`): push, PR, review e issues são autorizados em definitivo; merge, force-push e push em `main` nunca.
 - **Você revisa o relatório do `verify`**, não o diff linha a linha.
 - **Economia de contexto:** exploração vai para subagentes, a spec guarda as
   decisões, um ticket por sessão, `handoff` antes de estourar.
@@ -76,7 +79,9 @@ Para auditar o catálogo: `python3 scripts/audit.py`.
 | `to-tickets` | Quebra a spec em tickets com dependências e publica no tracker |
 | `implement` | Teste que falha → código → verify → commit e PR |
 | `verify` | Checks, evidência por REQ, leitura adversarial do diff, fecha a spec |
-| `ship-spec` | Prepara o PR da spec e cria issues (Jira na Qiron, GitHub nos pessoais) |
+| `ship-spec` | Push, PR (assignee `LorenzoMarty` fora da Qiron) e issues do que sobrou (Jira na Qiron, GitHub nos pessoais) |
+| `autopilot` | Trabalha o backlog inteiro: implementa, PR, review, novas issues; só espera o merge |
+| `file-issue` | Cria issue robusta: dedupe, tipo, critério de aceite, bloqueios, labels, assignee |
 | `quality-gate` | `code-review` + `simplify` sobre o diff |
 | `find-bugs` | Procura bugs e falhas de segurança nas mudanças da branch |
 | `specs-status` | Lista specs pendentes em todos os projetos |
@@ -87,7 +92,7 @@ Para auditar o catálogo: `python3 scripts/audit.py`.
 | Skill | Faz |
 |---|---|
 | `knowledge-manager` | Cache semântico por projeto: reaproveita o que já se sabe antes de ler código |
-| `claude-obsidian` | Grava registros, decisões e arquitetura no vault Obsidian ao concluir tarefa |
+| `claude-obsidian` | Grava registros, decisões, arquitetura e armadilhas de bibliotecas (`tags: biblioteca`, `context7_id`) no vault |
 | `organizar-vault` | Corrige problemas estruturais do vault (órfãs, links quebrados, frontmatter) |
 | `diluir-vault` | Condensa, padroniza e agrupa notas atômicas |
 | `token-trace` ✋ | Mostra onde os tokens foram gastos por tarefa e subagent |
@@ -147,7 +152,7 @@ Para auditar o catálogo: `python3 scripts/audit.py`.
 
 | Skill | Faz |
 |---|---|
-| `context7-mcp` | Consulta a documentação atual de bibliotecas via Context7 (exige o MCP) |
+| `context7-mcp` | Documentação atual via Context7 (exige o MCP): lê o vault antes e grava no Obsidian só as armadilhas não óbvias |
 | `supabase-postgres-best-practices` | Boas práticas de Postgres (Supabase) |
 | `find-skills` | Descobre e instala skills |
 
@@ -194,8 +199,15 @@ comandos no `CLAUDE.md`: são eles que o `verify` roda.
 
 ## Automação: o agente trabalhando sozinho
 
-Com o `claude.yml` do modelo no projeto (requer o
-[Claude GitHub App](https://github.com/apps/claude) e o secret
+**Na sua máquina:** `/workflow:autopilot` (ou "toca tudo"). Ele pega cada issue
+`ready-for-agent`, implementa, dá push, abre o PR com assignee e faz o code
+review; tudo que descobre ou decide vira issue (`file-issue`); empilha PRs
+quando uma issue depende de outra ainda não mergeada. Para quando o objetivo
+da spec está pronto (REQs feitos, nenhuma lacuna nova) e lista o que depende
+de você: merges e issues `needs-human`. Rode de novo depois de mergear.
+
+**Na nuvem (GitHub Action):** com o `claude.yml` do modelo no projeto
+(requer o [Claude GitHub App](https://github.com/apps/claude) e o secret
 `CLAUDE_CODE_OAUTH_TOKEN`, gerado com `claude setup-token`):
 
 1. Você escreve ou pede a spec (`workflow:write-spec`) e os tickets
@@ -206,7 +218,21 @@ Com o `claude.yml` do modelo no projeto (requer o
 3. Você revisa o relatório e aprova; pede ajustes comentando `@claude` no PR.
 4. Ticket que precisa de decisão sua volta com a label `needs-human`.
 
-Numa sessão interativa, `workflow:implement backlog` faz o mesmo em sequência.
+Limites do autopilot: nunca merge, nunca push em `main` nem force-push; para
+após 3 falhas na mesma issue (`needs-human`) e se criar mais de 15 issues sem
+fechar nenhuma.
+
+## Context7 e Obsidian
+
+Eles se complementam e não se duplicam: o **Context7** responde "o que a
+biblioteca documenta hoje"; o **vault** guarda "o que aprendemos usando-a".
+
+1. `dev:context7-mcp` lê antes as notas `tags: biblioteca` do vault (traz o
+   `context7_id`, a versão e as armadilhas) e pula a resolução do ID.
+2. Consulta o Context7 na versão do projeto.
+3. Se a doc contradisse o esperado ou uma armadilha custou tempo, grava uma
+   nota atômica via `knowledge:claude-obsidian` (sem copiar a doc).
+4. `write-spec` e `implement` registram biblioteca, versão e ID na spec/PR.
 
 ## Manutenção
 

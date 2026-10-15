@@ -58,7 +58,7 @@ In autonomous mode (see `workflow:start`), skip the quiz: publish directly and l
 
 ### 5. Publish the tickets to the configured tracker
 
-Publish the approved tickets. **How** depends on the tracker chosen above — the tickets are the same either way, only the shape of the blocking edges changes:
+Publish the approved tickets, **each through `workflow:file-issue`** (dedupe, quality bar, labels, assignee). **How** depends on the tracker chosen above — the tickets are the same either way, only the shape of the blocking edges changes:
 
 - **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
@@ -113,6 +113,6 @@ In either form, avoid specific file paths or code snippets — they go stale fas
 
 Com os tickets publicados, o primeiro da fronteira vai para
 `workflow:implement`. Para o agente seguir a fila sozinho:
-`workflow:implement backlog`, ou aplique a label `ready-for-agent` e deixe a
+`workflow:autopilot` (ou `workflow:implement backlog` para sem push/PR), ou aplique a label `ready-for-agent` e deixe a
 GitHub Action do projeto (`templates/project/.github/workflows/claude.yml`
 do repositório LorenzoMarty/skills) pegar cada um.

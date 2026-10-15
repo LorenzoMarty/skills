@@ -41,7 +41,8 @@ checks, abre o PR com o relatório do `verify`.
 ## 2. Explorar
 
 Subagente Explore para mapear onde a mudança entra e quais padrões seguir.
-Leia você mesmo só os arquivos que vai editar.
+Leia você mesmo só os arquivos que vai editar. API de biblioteca em jogo →
+`dev:context7-mcp` antes de escrever o código (ele consulta o vault antes).
 
 ## 3. Teste que falha
 
@@ -58,11 +59,15 @@ infraestrutura de teste, defina o comando que demonstra o comportamento.
   por nome de arquivo (nunca `-A`), leia `git diff` e desfaça hunks alheios.
   Nunca `--no-verify`; hook falhou → corrija e faça commit novo (não `--amend`).
   Sem `pre-commit` instalado em `$(git rev-parse --git-common-dir)/hooks`, rode
-  `pre-commit run --files <arquivos>` na mão. **Nunca `git push`** daqui: push
-  só com pedido explícito, via `workflow:ship-spec` (exceto na GitHub Action).
-- Achou algo errado fora do escopo? Anote para o PR em vez de corrigir.
+  `pre-commit run --files <arquivos>` na mão. Push só da própria branch de
+  trabalho, nunca force nem em `main` (autorização permanente: ver
+  `workflow:autopilot`).
+- Achou algo errado fora do escopo? Crie a issue com `workflow:file-issue`
+  em vez de corrigir, e cite-a no PR.
 - Decisão não prevista na spec: se reversível, decida e registre como
-  `Assumido:` no PR; se não, pare e pergunte.
+  `Assumido:` no PR e abra uma issue `decision` (`workflow:file-issue`); se
+  não, abra a issue `needs-human` com a opção recomendada e, em fila
+  (`autopilot`), siga para outro ticket; fora de fila, pare e pergunte.
 
 ## 5. Verificar
 
@@ -78,9 +83,11 @@ projeto não disser nada diferente:
 - branch `tipo/<n>-descricao` (ex.: `feat/12-export-csv`); se o ambiente
   impuser uma branch, use a do ambiente;
 - Conventional Commits em inglês, no imperativo, um assunto por commit;
-- PR no modelo `.github/pull_request_template.md`, com `Closes #N`, o
-  **relatório do verify**, as decisões `Assumido:` e os itens anotados fora
-  de escopo;
+- `git push -u origin <branch>` e PR no modelo `.github/pull_request_template.md`,
+  com `Closes #N`, o **relatório do verify**, as decisões `Assumido:` e as
+  issues criadas para o que ficou fora de escopo. **Assignee:** owner do
+  remote que não seja Qiron → `--assignee LorenzoMarty`; Qiron → nenhum. Sem
+  reviewer. Nunca merge;
 - marque os REQs como `[x]` (ou `[~]` parcial) na spec, some 1 em
   `revision_count` e acrescente no Log da entrevista o hash curto de cada
   REQ (`implement (<data>): REQ-2 → a1b2c3d`). Se `revision_count` >= 4 e
@@ -97,6 +104,7 @@ a próxima sessão continua dali.
 
 ## Próximo passo
 
-Tudo ✅ no `workflow:verify` → ofereça `workflow:ship-spec` (PR e issues).
+Tudo ✅ no `workflow:verify` → PR aberto e review (`code-review <PR> --comment`);
+depois `workflow:ship-spec` se a spec fechou. Em fila, `workflow:autopilot`.
 Algum ❌ → o `verify` devolve "Correções pendentes" na spec e você volta ao
 passo 3 com elas.

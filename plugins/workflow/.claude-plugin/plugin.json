@@ -1,6 +1,6 @@
 {
   "name": "workflow",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Fluxo de trabalho: da ideia à entrega — roteador, entrevista, spec, tickets, implementação, verificação, revisão, PR e handoff.",
   "author": {
     "name": "Lorenzo Marty"

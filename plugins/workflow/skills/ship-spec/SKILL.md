@@ -1,6 +1,6 @@
 ---
 name: ship-spec
-description: Depois que uma spec está `done` (verify aprovou), prepara o PR a partir da spec e cria issues para o que sobrou — Jira para projetos da Qiron, GitHub Issues para projetos pessoais. Nunca faz push nem cria nada externo sem aprovação explícita do usuário naquele turno. Usar quando o usuário disser "/ship-spec", "abre o PR da spec", "cria as issues", ou aceitar a oferta do verify.
+description: Depois que uma spec está `done` (verify aprovou), prepara o PR a partir da spec e cria issues para o que sobrou — Jira para projetos da Qiron, GitHub Issues para projetos pessoais. Faz push da branch e cria PR e issues sem pedir aprovação (autorização permanente do Lorenzo); nunca faz merge. Usar quando o usuário disser "/ship-spec", "abre o PR da spec", "cria as issues", ou aceitar a oferta do verify.
 ---
 
 # Ship Spec
@@ -30,31 +30,26 @@ fazem. Esta skill é cola fina: monta o conteúdo a partir da spec e delega.
    - Resumo (Objetivo), checklist REQ com evidência (`REQ-N → commit`, teste/saída), Fora de
      escopo, desvios/scope creep apontados pelo `verify`, achados do quality-gate não
      corrigidos, como testar. Título no estilo dos commits do repo.
-4. **Definir a base**: confirme com o usuário. Repo Qiron empilha branches `BAC-*` e abre uma PR
-   única no final — pergunte "abre PR agora (base = ?) ou só acumula na pilha?". Nunca presuma
-   `main`.
+4. **Definir a base**: repo Qiron empilha branches `BAC-*` e abre uma PR única no final — nesse
+   caso a base é a branch anterior da pilha, não `main`. Demais repos: a branch anterior se a
+   issue depende de PR aberto, senão `main`. Na dúvida real, registre `Assumido:` e siga.
 5. **Delegar a integração à skill `superpowers:finishing-a-development-branch`**, passando corpo,
-   base e comando de teste. Ela apresenta o menu e executa. O push só acontece se o usuário
-   escolher "Push and create PR" **neste turno** — push simples, nunca force. Não ofereça nem use
-   a opção "merge local" em branch empilhada.
-6. **Rascunhar issues** do que sobrou: REQ `[~]`/`[ ]`, scope creep que merece ticket, itens do
-   "Fora de escopo" que viram trabalho, achados do review não corrigidos. Liste título + descrição
-   curta + link pro REQ/commit de origem. Agrupe duplicatas.
-7. **Mostrar os rascunhos e criar só os aprovados**:
-   - **Jira**: `getAccessibleAtlassianResources` (cloudId) → `getJiraProjectIssueTypesMetadata`
-     (tipo válido) → `createJiraIssue`. Linke a issue ao ticket da branch se houver. Epic/parent
-     só se o usuário informar.
-   - **GitHub**: `gh issue create --title ... --body ...` no repo do remote.
-   - Reporte as chaves/URLs criadas.
+   base e comando de teste. Escolha sozinho "Push and create PR": push simples, nunca force. Nunca
+   use "merge local". Assignee: owner que não seja Qiron → `LorenzoMarty`; Qiron → nenhum.
+6. **Listar o que sobrou**: REQ `[~]`/`[ ]`, scope creep que merece ticket, itens do
+   "Fora de escopo" que viram trabalho, achados do review não corrigidos. Agrupe duplicatas.
+7. **Criar cada issue com `workflow:file-issue`** (dedupe, template, labels). No Jira da Qiron:
+   `getAccessibleAtlassianResources` (cloudId) → `getJiraProjectIssueTypesMetadata` (tipo válido) →
+   `createJiraIssue`; epic/parent só se o usuário informar. Reporte as chaves/URLs criadas.
 8. **Registro**: se a tarefa foi não-trivial, sugira `claude-obsidian` (regra 3). Não encadeie.
 
 ## Regras
 
-- Criar issue ou abrir PR é ação externa: sempre mostrar rascunho e esperar aprovação.
-- Nunca push sem o usuário escolher na hora; nunca force-push; nunca `--no-verify`.
+- Push, PR e issue estão autorizados em definitivo; **merge nunca** (é do usuário).
+- Nunca force-push; nunca `--no-verify`.
 - Não reabra escopo da spec nem reimplemente `finishing-a-development-branch`/`quality-gate`.
 - Se a ferramenta do tracker estiver indisponível (MCP fora, `gh` sem auth), não troque de tracker
-  em silêncio: avise e entregue os rascunhos em texto para o usuário criar.
+  em silêncio: avise e entregue os rascunhos em texto para o usuário criar (único caso em que não cria).
 
 ## Próximo passo
 

@@ -41,6 +41,11 @@ mudou de fato no projeto.
    - Padrão/lição que **já se repetiu em mais de um projeto, ou tem potencial claro de repetir**
      → além do Registro, cria ou atualiza nota em `01 - Notas Atômicas/` (ver passo 3.1). Não é
      "se o usuário pedir" — avalie sempre, silenciosamente, ao gravar o Registro.
+   - Armadilha, breaking change ou decisão de **uso de biblioteca** (veio do Context7
+     ou da prática) → nota atômica em `01 - Notas Atômicas/` com frontmatter extra
+     `tags: [biblioteca, <lib>]`, `context7_id: /org/proj`, `versao: <x.y>`,
+     `verificado: AAAA-MM-DD`. Uma armadilha por nota; sem trecho copiado da doc.
+     É o que o `dev:context7-mcp` consulta antes de chamar o Context7.
    Mais de uma categoria pode se aplicar na mesma tarefa — grave em todas as que se aplicarem.
 
 3.1. **Destilar em nota atômica (quando aplicável).** Critério: o padrão já apareceu em outro
