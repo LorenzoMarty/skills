@@ -20,7 +20,8 @@ As skills aparecem com o prefixo do plugin: `/workflow:implement #42`.
 | `dev` | Documentação atual de bibliotecas (exige o MCP do Context7), boas práticas de Postgres, descoberta de skills |
 
 Parte das skills é fork de [rtadewald/skills](https://github.com/rtadewald/skills),
-veja [UPSTREAM.md](UPSTREAM.md).
+veja [UPSTREAM.md](UPSTREAM.md). Plugins de outras pessoas que uso junto estão em
+[Plugins de terceiros](#plugins-de-terceiros).
 
 ## O fluxo de trabalho
 
@@ -155,6 +156,28 @@ Para auditar o catálogo: `python3 scripts/audit.py`.
 | `context7-mcp` | Documentação atual via Context7 (exige o MCP): lê o vault antes e grava no Obsidian só as armadilhas não óbvias |
 | `supabase-postgres-best-practices` | Boas práticas de Postgres (Supabase) |
 | `find-skills` | Descobre e instala skills |
+
+## Plugins de terceiros
+
+Não fazem parte deste marketplace: vêm de outros e são instalados à parte. Os
+três rodam juntos com o `lorenzo-skills` nesta máquina sem conflito observado.
+
+| Plugin | Origem | Faz | Instalar |
+|---|---|---|---|
+| `ponytail` | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Modo "desenvolvedor preguiçoso": reutilizar antes de escrever, stdlib e nativo antes de dependência, diff mínimo e um check rodável | `/plugin marketplace add DietrichGebert/ponytail` e `/plugin install ponytail@ponytail` |
+| `caveman` | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) | Respostas curtas (menos tokens de saída); código e commits continuam normais | `/plugin marketplace add JuliusBrussee/caveman` e `/plugin install caveman@caveman` |
+| `ifixai` | [ifixai-ai/iFixAi](https://github.com/ifixai-ai/iFixAi) (Apache-2.0) | Auditoria independente de agentes de IA: inspeções adversariais e scorecard de desalinhamento (`/ifixai:ifixai`) | já habilitado neste repositório (`.claude/settings.json`); em outro projeto: `/plugin marketplace add ifixai-ai/iFixAi` e `/plugin install ifixai@ifixai-community` |
+
+- **Escopo:** `ponytail` e `caveman` estão no escopo de usuário (só na máquina
+  do Lorenzo). Na GitHub Action eles **não** rodam: o job `autopilot` instala só
+  `workflow` e `dev`. O `ifixai` fica no escopo do projeto.
+- **`ifixai`:** o hook `SessionStart` cria um venv e instala `ifixai[anthropic]==3.3.0`
+  (versão fixada) na primeira sessão. Cada provedor é cobrado na conta da sua
+  chave; uma rodada completa com dois juízes custa na ordem de US$ 10–14, fora o
+  agente testado. A fixture padrão traz defeitos plantados de propósito: ela
+  serve para aprender, não para auditar o seu agente (use `--fixture`).
+- **Quando usar o `ifixai`:** agentes que você entrega com permissões e
+  ferramentas (ex.: os projetos com Agno). Não serve para auditar skills.
 
 ## Instalação
 
