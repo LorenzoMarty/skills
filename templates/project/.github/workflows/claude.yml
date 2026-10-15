@@ -1,11 +1,16 @@
 # Requisitos (uma vez por repositório): Claude GitHub App instalado
 # (https://github.com/apps/claude) e secret CLAUDE_CODE_OAUTH_TOKEN (`claude setup-token`).
+# Se `gh pr create` falhar com 403: Settings → Actions → General → "Allow GitHub
+# Actions to create and approve pull requests".
 #
+# Três jobs:
+#   claude    — @claude em issue/PR: explica, revisa ou implementa o pedido.
+#   autopilot — label `ready-for-agent` (aplicada por você) ou PR mergeado: implementa
+#               a issue, dá push, abre o PR, e segue para a próxima issue desbloqueada.
+#               O MERGE é sempre seu; cada merge reabre a fila.
+#   review    — todo PR aberto/atualizado recebe code review em comentários.
 name: Claude
 
-# Comente @claude numa issue ou PR para pedir explicação, review ou implementação.
-# Aplique a label `ready-for-agent` numa issue para o agente implementá-la sozinho
-# (workflow:implement, das skills em LorenzoMarty/skills).
 on:
   issue_comment:
     types: [created]
@@ -15,38 +20,130 @@ on:
     types: [submitted]
   issues:
     types: [opened, labeled]
+  pull_request:
+    types: [opened, synchronize, closed]
 
 jobs:
   claude:
     # Só o dono e colaboradores podem chamar o Claude (repositório público).
-    # Aplicar label já exige permissão de triagem no repositório.
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)) ||
-      (github.event_name == 'issues' && github.event.action == 'opened' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')) && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)) ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'ready-for-agent')
+      (github.event_name == 'issues' && github.event.action == 'opened' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')) && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association))
     concurrency:
       group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
       id-token: write
       actions: read
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          label_trigger: ready-for-agent
           plugin_marketplaces: https://github.com/LorenzoMarty/skills.git
           plugins: |
             workflow@lorenzo-skills
             dev@lorenzo-skills
           additional_permissions: |
             actions: read
+
+  autopilot:
+    # Label aplicada por humano (bot não dispara: evita que issues criadas pelo
+    # agente iniciem uma cascata) ou PR mergeado (segue a fila).
+    if: |
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'ready-for-agent' && github.event.sender.type != 'Bot') ||
+      (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
+    # Uma execução por vez: as issues dependem umas das outras.
+    concurrency:
+      group: autopilot
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          plugin_marketplaces: https://github.com/LorenzoMarty/skills.git
+          plugins: |
+            workflow@lorenzo-skills
+            dev@lorenzo-skills
+          additional_permissions: |
+            actions: read
+          prompt: |
+            REPO: ${{ github.repository }} (owner: ${{ github.repository_owner }})
+            GATILHO: ${{ github.event_name }}
+            ISSUE: ${{ github.event.issue.number }}
+            PR MERGEADO: ${{ github.event.pull_request.number }}
+
+            Rode `workflow:autopilot` neste repositório, no modo da Action:
+            - Se ISSUE veio preenchida, implemente essa issue. Senão (merge de PR),
+              liste as issues `ready-for-agent` abertas e pegue a primeira cujos
+              bloqueadores já estão fechados; sem nenhuma, encerre sem fazer nada.
+            - Faça UMA issue por execução: implement → verify → `git push -u origin <branch>`
+              → `gh pr create` com `Closes #N` e o relatório do verify. Branch a partir
+              da `main` atualizada. O workflow `review` revisa o PR; não faça review aqui.
+            - Assignee do PR: `--assignee ${{ github.repository_owner }}`, exceto se o owner
+              for Qiron-Robotics (nesse caso nenhum). Sem reviewer.
+            - Tudo que descobrir ou decidir vira issue via `workflow:file-issue`
+              (decisão que só o usuário resolve: label `needs-human`).
+            - Nunca merge, nunca push em main/master, nunca force-push, nunca feche issue à mão.
+            - Travou 3 vezes na mesma issue: comente o que tentou, label `needs-human`, encerre.
+          claude_args: |
+            --max-turns 120
+            --allowedTools "Read,Write,Edit,Glob,Grep,Skill,Task,Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git switch:*),Bash(git checkout:*),Bash(git fetch:*),Bash(git pull:*),Bash(git rebase:*),Bash(git push -u origin:*),Bash(git push origin:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh issue create:*),Bash(gh issue list:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(gh issue edit:*),Bash(gh label create:*),Bash(gh label list:*),Bash(npm:*),Bash(pnpm:*),Bash(npx:*),Bash(uv:*),Bash(pytest:*),Bash(ruff:*),Bash(python3:*)"
+
+  review:
+    # PRs do próprio repositório (fork não tem secret). Bots só se for o Claude.
+    if: |
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'opened' || github.event.action == 'synchronize') &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    concurrency:
+      group: review-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: "claude"
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Revise este PR contra a issue que ele fecha (`Closes #N`) e os critérios de
+            aceite dela. Procure bugs reais, casos de borda dos critérios, segurança,
+            segredos e mudanças fora de escopo. Comente achados confirmados em linhas
+            específicas; sugestão de estilo vai num comentário só, sem bloquear. Se nada
+            relevante, diga isso em um comentário curto. Achado fora de escopo que merece
+            trabalho: abra a issue (`gh issue create`, label `debt` ou `bug`). Não aprove
+            nem faça merge.
+          claude_args: |
+            --max-turns 30
+            --allowedTools "Read,Glob,Grep,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh issue view:*),Bash(gh issue create:*),Bash(gh issue list:*),Bash(git diff:*),Bash(git log:*)"

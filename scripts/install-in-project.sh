@@ -24,6 +24,8 @@ import json
 import sys
 from pathlib import Path
 
+sys.stdout.reconfigure(encoding="utf-8")
+
 template = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 target = Path(sys.argv[2])
 current = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
@@ -32,6 +34,8 @@ for key in ("extraKnownMarketplaces", "enabledPlugins"):
     current.setdefault(key, {}).update(template[key])
 allow = current.setdefault("permissions", {}).setdefault("allow", [])
 allow.extend(rule for rule in template["permissions"]["allow"] if rule not in allow)
+deny = current["permissions"].setdefault("deny", [])
+deny.extend(rule for rule in template["permissions"].get("deny", []) if rule not in deny)
 
 target.write_text(json.dumps(current, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 print(f"✓ {target}")

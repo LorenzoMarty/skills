@@ -206,17 +206,27 @@ quando uma issue depende de outra ainda não mergeada. Para quando o objetivo
 da spec está pronto (REQs feitos, nenhuma lacuna nova) e lista o que depende
 de você: merges e issues `needs-human`. Rode de novo depois de mergear.
 
-**Na nuvem (GitHub Action):** com o `claude.yml` do modelo no projeto
+**Na nuvem (GitHub Action):** o `claude.yml` do modelo tem três jobs
 (requer o [Claude GitHub App](https://github.com/apps/claude) e o secret
 `CLAUDE_CODE_OAUTH_TOKEN`, gerado com `claude setup-token`):
 
-1. Você escreve ou pede a spec (`workflow:write-spec`) e os tickets
-   (`workflow:to-tickets`) → issues com a label `ready-for-agent`.
-2. Cada issue com essa label dispara o agente, que roda `workflow:implement`,
-   sobe a branch e comenta o link do PR já preenchido (a Action não abre o PR
-   sozinha: o clique final é seu).
-3. Você revisa o relatório e aprova; pede ajustes comentando `@claude` no PR.
-4. Ticket que precisa de decisão sua volta com a label `needs-human`.
+| Job | Dispara com | Faz |
+|---|---|---|
+| `claude` | `@claude` em issue ou PR | Explica, revisa ou implementa o pedido |
+| `autopilot` | você aplica `ready-for-agent`, **ou** um PR é mergeado | Implementa uma issue, dá push, abre o PR (`Closes #N`, assignee, relatório do `verify`) e cria issues para o que descobrir |
+| `review` | PR aberto ou atualizado | Code review em comentários; achado fora de escopo vira issue |
+
+O ciclo: você escreve a spec e os tickets (`write-spec`, `to-tickets`) → aplica
+`ready-for-agent` → PR com review → **você faz o merge** → o merge dispara a
+próxima issue desbloqueada → e assim até a fila acabar. Issue que precisa de
+decisão sua volta como `needs-human`. Issues criadas pelo próprio agente não
+disparam sozinhas (evita cascata): entram na fila pelo próximo merge ou pela
+sua label.
+
+O `install-in-project.sh` libera push, `gh pr/issue` e nega `gh pr merge`,
+force-push e push em `main` nas permissões do projeto. Se `gh pr create` falhar
+com 403, ative "Allow GitHub Actions to create and approve pull requests" nas
+configurações do repositório.
 
 Limites do autopilot: nunca merge, nunca push em `main` nem force-push; para
 após 3 falhas na mesma issue (`needs-human`) e se criar mais de 15 issues sem
