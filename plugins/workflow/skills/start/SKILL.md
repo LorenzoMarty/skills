@@ -19,7 +19,7 @@ skills → fechar com evidência.**
 
 Exemplo:
 
-> "Quero exportar o relatório do Estoque em CSV."
+> "Quero exportar o relatório de vendas em CSV."
 > → feature pequena, critérios claros → `workflow:write-spec` (curta) →
 > `workflow:implement` → `workflow:verify` → PR.
 
