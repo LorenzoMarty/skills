@@ -1,6 +1,6 @@
 ---
 name: ship-spec
-description: Depois que uma spec está `done` (review-spec aprovou), prepara o PR a partir da spec e cria issues para o que sobrou — Jira para projetos da Qiron, GitHub Issues para projetos pessoais. Nunca faz push nem cria nada externo sem aprovação explícita do usuário naquele turno. Usar quando o usuário disser "/ship-spec", "abre o PR da spec", "cria as issues", ou aceitar a oferta do review-spec.
+description: Depois que uma spec está `done` (verify aprovou), prepara o PR a partir da spec e cria issues para o que sobrou — Jira para projetos da Qiron, GitHub Issues para projetos pessoais. Nunca faz push nem cria nada externo sem aprovação explícita do usuário naquele turno. Usar quando o usuário disser "/ship-spec", "abre o PR da spec", "cria as issues", ou aceitar a oferta do verify.
 ---
 
 # Ship Spec
@@ -10,8 +10,8 @@ fazem. Esta skill é cola fina: monta o conteúdo a partir da spec e delega.
 
 ## Pré-condições
 
-- `.claude/specs/<slug>/spec.md` com `status: done`. Senão, pare e diga que falta `review-spec`.
-- Árvore limpa (`git status`) e commits por REQ já feitos pelo `implement-spec`.
+- `.claude/specs/<slug>/spec.md` com `status: done`. Senão, pare e diga que falta `verify`.
+- Árvore limpa (`git status`) e commits por REQ já feitos pelo `implement`.
 
 ## Pipeline
 
@@ -28,7 +28,7 @@ fazem. Esta skill é cola fina: monta o conteúdo a partir da spec e delega.
    rodou (ex.: só `test_mac.py` vs suíte completa) — não escreva "testes passam" sem isso.
 3. **Montar o corpo da PR a partir do spec.md** e mostrar como rascunho:
    - Resumo (Objetivo), checklist REQ com evidência (`REQ-N → commit`, teste/saída), Fora de
-     escopo, desvios/scope creep apontados pelo `review-spec`, achados do quality-gate não
+     escopo, desvios/scope creep apontados pelo `verify`, achados do quality-gate não
      corrigidos, como testar. Título no estilo dos commits do repo.
 4. **Definir a base**: confirme com o usuário. Repo Qiron empilha branches `BAC-*` e abre uma PR
    única no final — pergunte "abre PR agora (base = ?) ou só acumula na pilha?". Nunca presuma
@@ -55,3 +55,7 @@ fazem. Esta skill é cola fina: monta o conteúdo a partir da spec e delega.
 - Não reabra escopo da spec nem reimplemente `finishing-a-development-branch`/`quality-gate`.
 - Se a ferramenta do tracker estiver indisponível (MCP fora, `gh` sem auth), não troque de tracker
   em silêncio: avise e entregue os rascunhos em texto para o usuário criar.
+
+## Próximo passo
+
+PR e issues criados → fim do fluxo; registre a tarefa com `knowledge:claude-obsidian`.

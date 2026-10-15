@@ -1,12 +1,12 @@
 ---
 name: specs-status
-description: Lista, cross-project, toda spec pendente (status ready/in-progress/needs-changes) criada via spec-interview em qualquer projeto já trabalhado — não só o projeto atual. Usar quando o usuário disser "/specs-status", "o que tá parado", "specs pendentes", "quais specs faltam implementar".
+description: Lista, cross-project, toda spec pendente (status ready/in-progress/needs-changes) criada via write-spec em qualquer projeto já trabalhado — não só o projeto atual. Usar quando o usuário disser "/specs-status", "o que tá parado", "specs pendentes", "quais specs faltam implementar".
 ---
 
 # Specs Status
 
 Objetivo: dar visão de todas as specs pendentes em todos os projetos, não só o `cwd` atual — útil
-pra quem alterna entre vários repos e perde de vista o que ficou sem `/implement-spec`.
+pra quem alterna entre vários repos e perde de vista o que ficou sem `/implement`.
 
 ## Pipeline
 
@@ -36,7 +36,7 @@ pra quem alterna entre vários repos e perde de vista o que ficou sem `/implemen
    | projeto | spec | status | idade | próximo passo |
    |---|---|---|---|---|
 
-   "próximo passo" é `/implement-spec` (se `ready`), `/review-spec` (se `in-progress` acabou de
+   "próximo passo" é `/implement` (se `ready`), `/verify` (se `in-progress` acabou de
    implementar), ou "aguardando ajuste" (se `needs-changes`).
 
 6. Se não achar nenhuma spec pendente em lugar nenhum, diga isso direto — não é erro, é bom sinal.

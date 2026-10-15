@@ -91,23 +91,28 @@ A cadeia se liga a estas skills:
 | Momento | Skill |
 |---|---|
 | Antes de explorar | `knowledge:knowledge-manager` |
-| Spec salva | `workflow:spec-router` (grava `skills-plan.yaml`) |
+| Spec salva | `workflow:spec-router` (grava `skills-plan.yaml`; `write-spec` chama) |
 | Diff grande ou área sensível | `workflow:quality-gate` (dentro do `verify`) |
 | Spec `done`, PR e issues | `workflow:ship-spec` (só com pedido explícito de push) |
 | Tarefa concluída, não trivial | `knowledge:claude-obsidian` (registro) ou `/decisao` |
 | Ver specs paradas | `workflow:specs-status` |
 
-Duas cadeias coexistem, com papéis diferentes:
+## Um fluxo só
 
-- **Validar ideia** → `grill-me` (testa o plano em rodadas, decide o que
-  fazer) → `write-spec`.
-- **Especificar o que será feito** → `workflow:spec-interview` (uma pergunta
-  por vez, salva a spec, encadeia `spec-router` → `implement-spec` →
-  `review-spec` → `ship-spec`). Use quando já se sabe o que quer e falta
-  detalhar requisitos e critério de concluído.
+```
+grill-me ─► write-spec ─► spec-router ─► [to-tickets] ─► implement ─► verify ─► ship-spec
+(se vago)                                                     ▲            │
+                                                              └─ correções ┘
+```
 
-`workflow:implement`/`verify` são a execução orientada a ticket e PR;
-`workflow:implement-spec`/`review-spec` são a execução orientada a spec.
+- `grill-me`: só quando a ideia é vaga e o usuário está presente (decide).
+- `write-spec`: salva `.claude/specs/<slug>/spec.md` com `REQ-N` (especifica).
+- `implement`: executa por ticket ou spec, commit por REQ.
+- `verify`: confere cada REQ em runtime, fecha a spec (`done` ou
+  `needs-changes`, que volta ao `implement`).
+
+Não existem mais `spec-interview`, `implement-spec` e `review-spec`: o
+trabalho deles é do `write-spec`, `implement` e `verify`.
 
 ## Contrato com o projeto
 
