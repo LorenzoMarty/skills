@@ -69,6 +69,7 @@ O que gravar depende do que a tarefa produziu — mais de uma linha pode se apli
 | Mudança de fluxo de request, camadas, integrações | `Arquitetura.md` | edição pontual |
 | Status do projeto mudou, novo link relevante | `<Projeto>.md` (hub) | edição pontual, **confirmar antes** |
 | Padrão/lição repetido em outro projeto, ou com potencial claro de repetir | `01 - Notas Atômicas/<Nota>.md` | cria (padrão novo) ou atualiza (padrão já coberto), **sempre aditivo — Registro nunca é apagado/resumido** |
+| Armadilha, breaking change ou decisão de uso de biblioteca (Context7 ou prática) | `01 - Notas Atômicas/<Nota>.md` com `tags: [biblioteca, <lib>]`, `context7_id`, `versao`, `verificado` | uma armadilha por nota; nunca copiar a documentação |
 
 ## Convenções de escrita
 
