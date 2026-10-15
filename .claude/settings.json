@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "ifixai-community": {
+      "source": { "source": "github", "repo": "ifixai-ai/iFixAi" }
+    }
+  },
+  "enabledPlugins": {
+    "ifixai@ifixai-community": true
+  }
+}
