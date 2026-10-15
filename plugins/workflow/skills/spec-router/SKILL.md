@@ -1,6 +1,6 @@
 ---
 name: spec-router
-description: Depois que uma spec (`write-spec`) é aprovada, seleciona o conjunto mínimo de skills para implementá-la, valida cada nome contra o inventário real instalado, resolve sobreposição entre skills concorrentes e grava o plano em `.claude/specs/<slug>/skills-plan.yaml` — separado do spec.md. Nunca implementa código nem faz pergunta de produto (isso é da entrevista). Invocado automaticamente pela `write-spec` logo após a aprovação, e pode ser rodado manualmente para re-rotear uma spec existente ("roteia skills pra spec X", "/spec-router").
+description: Depois que uma spec (`write-spec`) é aprovada, seleciona o conjunto mínimo de skills para implementá-la, valida cada nome contra o inventário real instalado, resolve sobreposição entre skills concorrentes e grava o plano em `.claude/specs/<slug>/skills-plan.yaml` — separado do spec.md. Nunca implementa código nem faz pergunta de produto (isso é da entrevista). Usar logo após salvar uma spec (o `write-spec` já o chama) ou para re-rotear uma spec existente ("roteia skills pra spec X", "/spec-router").
 ---
 
 # Spec Router

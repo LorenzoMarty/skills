@@ -13,7 +13,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf8")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRIGGER = re.compile(r"\b(use|usar|quando|when|trigger|activate|invoke)", re.I)
-PAID = re.compile(r"(API[_ ]KEY|OPENROUTER|FAL_KEY|GEMINI_API|GOOGLE_API)", re.I)
+PAID = re.compile(r"(OPENROUTER|FAL_KEY|GEMINI_API|GOOGLE_API|HEYGEN|ELEVENLABS)", re.I)
 
 readme = open(f"{ROOT}/README.md", encoding="utf8").read()
 skills = {}  # "plugin:skill" -> dict

@@ -1,6 +1,6 @@
 ---
 name: mediabunny
-description: Multimedia handling with the Mediabunny library
+description: Multimedia handling with the Mediabunny library. Use when reading, writing, converting, trimming or transcoding video and audio in the browser or Node, or when the user mentions Mediabunny.
 metadata:
   tags: remotion, mediabunny, multimedia, video, audio
 ---

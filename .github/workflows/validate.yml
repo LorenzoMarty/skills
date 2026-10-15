@@ -24,3 +24,6 @@ jobs:
           for plugin in plugins/*/; do claude plugin validate "$plugin"; done
       - name: Scripts shell
         run: bash -n scripts/*.sh
+      - name: Auditoria do catálogo (só avisa)
+        continue-on-error: true
+        run: python3 scripts/audit.py
