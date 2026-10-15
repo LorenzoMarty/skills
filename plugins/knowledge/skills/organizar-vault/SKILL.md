@@ -5,7 +5,7 @@ description: Varre o vault Obsidian E_Mind por 8 problemas estruturais — notas
 
 # Organizar Vault
 
-Manutenção estrutural do vault E_Mind (`C:/Users/loren/OneDrive/Desktop/E_Mind`). Escopo fechado:
+Manutenção estrutural do vault E_Mind (`~/OneDrive/Desktop/E_Mind`, ou `$E_MIND_VAULT`). Escopo fechado:
 só `01 - Notas Atômicas`, `02 - Projetos`, `03 - Trabalho`, `05 - MOCs`. Nunca toca `06 - Templates`,
 `08 - Claude` ou a raiz do vault, e nunca reescreve o texto de `Decisões.md`/`Arquitetura.md` — só
 mexe em estrutura (frontmatter, links, entradas de MOC).
@@ -25,7 +25,7 @@ ciente do risco. Aplique a correção e siga — não pare para perguntar "posso
 
 2. **Rode o scanner.**
    ```
-   python "C:/Users/loren/.claude/skills/organizar-vault/scripts/scan_vault.py"
+   python "${CLAUDE_SKILL_DIR}/scripts/scan_vault.py"
    ```
    Devolve um JSON só-leitura com 8 listas: `orphans`, `registros_sem_hub`, `moc_faltando`,
    `frontmatter_incompleto`, `duplicatas_candidatas`, `links_quebrados`,

@@ -79,7 +79,7 @@ Para auditar o catálogo: `python3 scripts/audit.py`.
 | `to-tickets` | Quebra a spec em tickets com dependências e publica no tracker |
 | `implement` | Teste que falha → código → verify → commit e PR |
 | `verify` | Checks, evidência por REQ, leitura adversarial do diff, fecha a spec |
-| `ship-spec` | Push, PR (assignee `LorenzoMarty` fora da Qiron) e issues do que sobrou (Jira na Qiron, GitHub nos pessoais) |
+| `ship-spec` | Push, PR (assignee `LorenzoMarty` em repositórios pessoais) e issues do que sobrou (Jira nos de trabalho, GitHub nos pessoais) |
 | `autopilot` | Trabalha o backlog inteiro: implementa, PR, review, novas issues; só espera o merge |
 | `file-issue` | Cria issue robusta: dedupe, tipo, critério de aceite, bloqueios, labels, assignee |
 | `quality-gate` | `code-review` + `simplify` sobre o diff |
@@ -183,7 +183,7 @@ Ou pelo próprio Claude Code: `/plugin marketplace add LorenzoMarty/skills` e
 ### Em um projeto (vale para quem clonar e para a GitHub Action)
 
 ```bash
-scripts/install-in-project.sh ~/projetos/Estoque-NY
+scripts/install-in-project.sh ~/projetos/meu-projeto
 ```
 
 Mescla o marketplace e uma lista de permissões em `.claude/settings.json`,

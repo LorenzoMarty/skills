@@ -5,7 +5,7 @@ description: Grava contexto de projeto no vault Obsidian E_Mind ao concluir uma 
 
 # Claude Obsidian
 
-Escreve no vault E_Mind (`C:/Users/loren/OneDrive/Desktop/E_Mind`) — conhecimento humano
+Escreve no vault E_Mind (`~/OneDrive/Desktop/E_Mind`, ou `$E_MIND_VAULT`; expanda `~` para o home) — conhecimento humano
 permanente, nunca cache da IA. Regras de pasta/frontmatter/nomenclatura completas em
 `references/obsidian-vault.md` — leia antes da primeira escrita da sessão, não recarregue depois.
 

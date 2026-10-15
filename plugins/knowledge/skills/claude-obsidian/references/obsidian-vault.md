@@ -7,10 +7,10 @@ também (e vice-versa).
 ## Caminho
 
 ```
-C:/Users/loren/OneDrive/Desktop/E_Mind
+~/OneDrive/Desktop/E_Mind   (ou a variável de ambiente E_MIND_VAULT)
 ```
 
-Único lugar onde este path absoluto pode estar hardcoded. Em `CLAUDE.md` de repo vai só o ponteiro
+Único lugar onde este caminho pode estar fixo (os scanners leem `E_MIND_VAULT`). Em `CLAUDE.md` de repo vai só o ponteiro
 nominal (`## Contexto no Obsidian`).
 
 ## Aviso OneDrive
